@@ -1,1 +1,1 @@
-export { consonants as ipaConsonants } from './ipaPath';
+export { consonants as ipaConsonants, vowels as ipaVowels } from './ipaPath';
