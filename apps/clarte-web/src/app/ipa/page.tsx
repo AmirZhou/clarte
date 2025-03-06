@@ -1,33 +1,14 @@
 // route:/ipa
+import { Consonants, Vowels } from './components';
 
 export default function Page() {
   return (
-    <div className="border w-7/12 min-w-lg flex flex-col gap-16">
+    <div className="border w-full min-w-lg flex flex-col gap-16">
       <div>
-        <h2>Vowels</h2>
-        <div>
-          <h3>Oral</h3>
-          <div>Render a list of them</div>
-        </div>
-        <div>
-          <h3>Nasal</h3>
-          <div>Render a list of them</div>
-        </div>
-        <div>
-          <h3>semi</h3>
-          <div>Render a list of them</div>
-        </div>
+        <Vowels />
       </div>
       <div>
-        <h2>Consonants</h2>
-        <div>
-          <h3>Voiced</h3>
-          <div>Render a list of them</div>
-        </div>
-        <div>
-          <h3>Unvoiced</h3>
-          <div>Render a list of them</div>
-        </div>
+        <Consonants />
       </div>
     </div>
   );

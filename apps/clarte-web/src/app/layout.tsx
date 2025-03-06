@@ -25,10 +25,10 @@ export default function RootLayout({
     <html className={poppins.className} lang="en">
       <body className="flex">
         <Sidebar />
-        <div className="flex-1 border flex items-center h-screen p-8 justify-center gap-8">
+        <div className="flex-1 border flex items-center h-screen p-8 justify-evenly gap-8">
           {/* the following two ad div should be disabled on screen small */}
           <div className="ad-side w-64 border h-96 hidden 2xl:block"></div>
-          {children}
+          <div className="self-start w-9/12">{children}</div>
           <div className="ad-side w-64 border h-96 hidden lg:block"></div>
         </div>
       </body>
