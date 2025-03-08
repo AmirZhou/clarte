@@ -7,14 +7,19 @@ interface SVGIconProps extends React.ComponentProps<'svg'> {
   viewBox?: string;
 }
 
-export default function SVGIcon({ className, ref, ...props }: SVGIconProps) {
+export default function SVGIcon({
+  className,
+  ref,
+  path,
+  ...props
+}: SVGIconProps) {
   const svgRef = useRef<SVGSVGElement>(null);
 
   return (
     <svg
       ref={ref || svgRef} // use passed ref if available
       className={cn(
-        'stroke-linecap-round stroke-linejoin-round h-6 w-6 stroke-current stroke-[1.5]',
+        'stroke-linecap-round stroke-linejoin-round h-6 w-6 stroke-current',
         className
       )}
       viewBox={props.viewBox || '0 0 24 24'}
@@ -22,7 +27,7 @@ export default function SVGIcon({ className, ref, ...props }: SVGIconProps) {
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <path d={props.path} />
+      <path d={path} />
     </svg>
   );
 }
