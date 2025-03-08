@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import './globals.css';
 import { Sidebar } from '@/components/layouts/sidebar';
+import { AdsPlaceHolder } from '@/components/layouts/ads';
 
 const poppins = Poppins({
   weight: ['400', '700'], // Regular and Bold
@@ -27,9 +28,13 @@ export default function RootLayout({
         <Sidebar />
         <div className="flex-1 border flex items-center h-screen p-8 justify-evenly gap-8">
           {/* the following two ad div should be disabled on screen small */}
-          <div className="ad-side w-64 border h-96 hidden 2xl:block"></div>
+          <div className="ad-side w-64 border h-96 hidden 2xl:block rounded-md overflow-hidden">
+            <AdsPlaceHolder />
+          </div>
           <div className="self-start w-9/12">{children}</div>
-          <div className="ad-side w-64 border h-96 hidden lg:block"></div>
+          <div className="ad-side w-64 border h-96 hidden lg:block rounded-md overflow-hidden">
+            <AdsPlaceHolder />
+          </div>
         </div>
       </body>
     </html>
