@@ -50,7 +50,10 @@ export default function Vowels() {
             <h3 className="font-semibold text-2xl">Semi</h3>
             <div className="flex gap-4">
               {ipaVowels.semi.map((vowel) => (
-                <div className="flex justify-center items-center rounded-full bg-red-300 h-16 w-16">
+                <div
+                  key={vowel.name}
+                  className="flex justify-center items-center rounded-full bg-red-300 h-16 w-16"
+                >
                   <SVGIcon
                     className="w-6 h-6 stroke-0 fill-emerald-700"
                     name={vowel.name}
