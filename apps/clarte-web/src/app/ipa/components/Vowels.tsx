@@ -1,5 +1,6 @@
 import { SVGIcon } from '@/components/icons';
 import { ipaVowels } from '@/utils';
+import IPAIcon from './IPAIcon';
 
 export default function Vowels() {
   return (
@@ -12,17 +13,7 @@ export default function Vowels() {
             <h3 className="font-semibold text-2xl">Oral-Vowels</h3>
             <div className="flex gap-4">
               {ipaVowels.oral.map((vowel) => (
-                <div
-                  key={vowel.name}
-                  className="flex justify-center items-center rounded-full bg-red-300 h-16 w-16"
-                >
-                  <SVGIcon
-                    className="w-6 h-6 stroke-0 fill-emerald-700"
-                    name={vowel.name}
-                    path={vowel.path}
-                    viewBox={vowel.viewbox}
-                  />
-                </div>
+                <IPAIcon key={vowel.name} ipa={vowel} />
               ))}
             </div>
           </div>
