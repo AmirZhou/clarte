@@ -8,7 +8,7 @@ export default function Vowels() {
         <h2 className="font-bold text-8xl">Vowels</h2>
 
         <div className="flex flex-col gap-4">
-          <div>
+          <div className="flex flex-col gap-2">
             <h3 className="font-semibold text-2xl">Oral-Vowels</h3>
             <div className="flex gap-4 flex-wrap">
               {ipaVowels.oral.map((vowel) => (
@@ -17,7 +17,7 @@ export default function Vowels() {
             </div>
           </div>
 
-          <div>
+          <div className="flex flex-col gap-2">
             <h3 className="font-semibold text-2xl">Nasal</h3>
             <div className="flex gap-4 flex-wrap">
               {ipaVowels.nasal.map((vowel) => (
@@ -26,7 +26,7 @@ export default function Vowels() {
             </div>
           </div>
 
-          <div>
+          <div className="flex flex-col gap-2">
             <h3 className="font-semibold text-2xl">Semi</h3>
             <div className="flex gap-4 flex-wrap">
               {ipaVowels.semi.map((vowel) => (
