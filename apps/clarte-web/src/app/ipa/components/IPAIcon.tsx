@@ -1,13 +1,10 @@
 'use client';
 import { useRef } from 'react';
 import { SVGIcon } from '@/components/icons';
+import { IPA } from '@/types';
 
 interface IPAIconProps {
-  ipa: {
-    path: string;
-    viewbox: string;
-    name: string;
-  };
+  ipa: IPA;
 }
 
 export default function IPAIcon({ ipa }: IPAIconProps) {
@@ -23,7 +20,7 @@ export default function IPAIcon({ ipa }: IPAIconProps) {
     <>
       <audio ref={audioRef} src={`/ipa-sounds/${ipa.name}.mp3`} />
       <div
-        className="flex justify-center items-center rounded-full bg-red-300 h-16 w-16"
+        className="flex justify-center items-center rounded-full bg-red-300 h-16 w-16 hover:bg-red-200 cursor-pointer"
         onClick={handleClick}
       >
         <SVGIcon

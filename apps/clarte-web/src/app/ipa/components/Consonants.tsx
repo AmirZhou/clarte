@@ -5,7 +5,7 @@ export default function Consonants() {
   return (
     <>
       <div className="flex flex-col gap-6">
-        <h2 className="font-bold text-8xl">Consonants</h2>
+        <h2 className="font-bold text-4xl text-emerald-600">Consonants</h2>
 
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">

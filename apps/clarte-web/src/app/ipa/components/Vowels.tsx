@@ -5,7 +5,7 @@ export default function Vowels() {
   return (
     <>
       <div className="flex flex-col gap-6">
-        <h2 className="font-bold text-8xl">Vowels</h2>
+        <h2 className="font-bold text-4xl text-emerald-700">Vowels</h2>
 
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
@@ -14,6 +14,9 @@ export default function Vowels() {
               {ipaVowels.oral.map((vowel) => (
                 <IPAIcon key={vowel.name} ipa={vowel} />
               ))}
+            </div>
+            <div className="text-center w-full h-16 border rounded-md">
+              placeholder for IPA explanation
             </div>
           </div>
 
