@@ -24,13 +24,13 @@ export default function RootLayout({
   return (
     // This is the recommended way to use the font, but what's the difference
     <html className={poppins.className} lang="en">
-      <body className="flex">
+      <body className="flex border-b h-screen">
         <Sidebar />
-        <div className="flex-1 border flex items-center p-8 justify-start gap-8 overflow-x-hidden ">
+        <div className="overflow-y-scroll flex-1 flex items-center p-8 justify-start gap-8 ">
           <div className="ad-side border h-96 hidden 2xl:block rounded-md ">
             <AdsPlaceHolder />
           </div>
-          <div className="self-start w-full lg:w-9/12 ">{children}</div>
+          <div className="self-start w-full lg:w-9/12">{children}</div>
           <div className="ad-side border h-96 hidden lg:block rounded-md">
             <AdsPlaceHolder />
           </div>
