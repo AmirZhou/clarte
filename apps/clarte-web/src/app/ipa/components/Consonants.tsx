@@ -1,5 +1,5 @@
-import { SVGIcon } from '@/components/icons';
 import { ipaConsonants } from '@/utils';
+import IPAIcon from './IPAIcon';
 
 export default function Consonants() {
   return (
@@ -11,18 +11,8 @@ export default function Consonants() {
           <div>
             <h3 className="font-semibold text-2xl">Voiced</h3>
             <div className="flex gap-4">
-              {ipaConsonants.voiced.map((vowel) => (
-                <div
-                  key={vowel.name}
-                  className="flex justify-center items-center rounded-full bg-red-300 h-16 w-16"
-                >
-                  <SVGIcon
-                    className="w-6 h-6 stroke-0 fill-emerald-700"
-                    name={vowel.name}
-                    path={vowel.path}
-                    viewBox={vowel.viewbox}
-                  />
-                </div>
+              {ipaConsonants.voiced.map((voiced) => (
+                <IPAIcon key={voiced.name} ipa={voiced} />
               ))}
             </div>
           </div>
@@ -30,18 +20,8 @@ export default function Consonants() {
           <div>
             <h3 className="font-semibold text-2xl">Voiceless</h3>
             <div className="flex gap-4">
-              {ipaConsonants.voiceless.map((vowel) => (
-                <div
-                  key={vowel.name}
-                  className="flex justify-center items-center rounded-full bg-red-300 h-16 w-16"
-                >
-                  <SVGIcon
-                    className="w-6 h-6 stroke-0 fill-emerald-700"
-                    name={vowel.name}
-                    path={vowel.path}
-                    viewBox={vowel.viewbox}
-                  />
-                </div>
+              {ipaConsonants.voiceless.map((voiceless) => (
+                <IPAIcon key={voiceless.name} ipa={voiceless} />
               ))}
             </div>
           </div>
