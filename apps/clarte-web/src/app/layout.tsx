@@ -27,7 +27,6 @@ export default function RootLayout({
       <body className="flex">
         <Sidebar />
         <div className="flex-1 border flex items-center p-8 justify-start gap-8 overflow-x-hidden ">
-          {/* the following two ad div should be disabled on screen small */}
           <div className="ad-side border h-96 hidden 2xl:block rounded-md ">
             <AdsPlaceHolder />
           </div>

@@ -10,7 +10,7 @@ export default function Consonants() {
         <div className="flex flex-col gap-4">
           <div>
             <h3 className="font-semibold text-2xl">Voiced</h3>
-            <div className="flex gap-4">
+            <div className="flex gap-4 flex-wrap">
               {ipaConsonants.voiced.map((voiced) => (
                 <IPAIcon key={voiced.name} ipa={voiced} />
               ))}
@@ -19,7 +19,7 @@ export default function Consonants() {
 
           <div>
             <h3 className="font-semibold text-2xl">Voiceless</h3>
-            <div className="flex gap-4">
+            <div className="flex gap-4 flex-wrap">
               {ipaConsonants.voiceless.map((voiceless) => (
                 <IPAIcon key={voiceless.name} ipa={voiceless} />
               ))}
