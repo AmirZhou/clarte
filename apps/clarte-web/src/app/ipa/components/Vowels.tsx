@@ -3,6 +3,7 @@
 import { ipaVowels } from '@/utils';
 import IPAIcon from './IPAIcon';
 import { useIPA } from '../context/IPAContext';
+import IPADetails from './IPADetails';
 
 export default function Vowels() {
   const { activeIPA, setActiveIPA } = useIPA();
@@ -24,9 +25,7 @@ export default function Vowels() {
                 />
               ))}
             </div>
-            <div className="text-center w-full h-16 border rounded-md">
-              {activeIPA && activeIPA.name}
-            </div>
+            <IPADetails activeIPA={activeIPA} categoryIPAs={ipaVowels.oral} />
           </div>
 
           <div className="flex flex-col gap-2">
@@ -41,6 +40,7 @@ export default function Vowels() {
                 />
               ))}
             </div>
+            <IPADetails activeIPA={activeIPA} categoryIPAs={ipaVowels.nasal} />
           </div>
 
           <div className="flex flex-col gap-2">
@@ -55,6 +55,7 @@ export default function Vowels() {
                 />
               ))}
             </div>
+            <IPADetails activeIPA={activeIPA} categoryIPAs={ipaVowels.semi} />
           </div>
         </div>
       </div>

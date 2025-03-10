@@ -2,6 +2,7 @@
 import { ipaConsonants } from '@/utils';
 import IPAIcon from './IPAIcon';
 import { useIPA } from '../context/IPAContext';
+import IPADetails from './IPADetails';
 
 export default function Consonants() {
   const { activeIPA, setActiveIPA } = useIPA();
@@ -23,6 +24,10 @@ export default function Consonants() {
                 />
               ))}
             </div>
+            <IPADetails
+              activeIPA={activeIPA}
+              categoryIPAs={ipaConsonants.voiced}
+            />
           </div>
 
           <div className="flex flex-col gap-2">
@@ -37,6 +42,10 @@ export default function Consonants() {
                 />
               ))}
             </div>
+            <IPADetails
+              activeIPA={activeIPA}
+              categoryIPAs={ipaConsonants.voiceless}
+            />
           </div>
         </div>
       </div>
