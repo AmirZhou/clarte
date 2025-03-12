@@ -1,13 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
-export class Word {
+export class Ipa {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ unique: true })
-  word: string;
-
-  @Column()
-  pronounciation: string;
+  ipaSymbol: string;
 }
