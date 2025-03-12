@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Word } from './modules/ipa/entities/word.entity';
+import { IpaModule } from './modules/ipa/ipa.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { Word } from './modules/ipa/entities/word.entity';
       autoLoadEntities: false,
       migrations: ['src/database/migrations/*.ts'],
     }),
+    IpaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
