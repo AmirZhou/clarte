@@ -1,0 +1,24 @@
+meta {
+  name: testAudio
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://127.0.0.1:5000/tts
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+      "text": "Sans quoi nous pouvons être sûrs et certains que ces problèmes deviendront explosifs.",
+      "language": "FR",
+      "speaker": "FR",
+      "speed": 1.0
+  }
+}
