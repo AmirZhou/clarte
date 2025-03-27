@@ -1,5 +1,5 @@
 import { createClientForServer } from '@/utils/supabase/server';
-import { signOut } from '@/utils/actions';
+import { signOutAction } from '@/utils/actions';
 import Link from 'next/link';
 
 export default async function Home() {
@@ -38,7 +38,7 @@ export default async function Home() {
         <p className="text-xl">Email: {email}</p>
         <p className="text-xl">Created with: {app_metadata.provider}</p>
 
-        <form action={signOut}>
+        <form action={signOutAction}>
           <button className="btn" type="submit">
             Sign Out
           </button>

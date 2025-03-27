@@ -27,11 +27,13 @@ const signInWith = (provider: Provider) => async () => {
   }
 };
 
-const signinWithGoogle = signInWith('google');
-const signinWithGithub = signInWith('github');
-const signOut = async () => {
+// why these two still functions, not promise already
+const signinWithGoogleAction = signInWith('google');
+const signinWithGithubAction = signInWith('github');
+
+const signOutAction = async () => {
   const supabase = await createClientForServer();
   await supabase.auth.signOut();
 };
 
-export { signinWithGoogle, signinWithGithub, signOut };
+export { signinWithGoogleAction, signinWithGithubAction, signOutAction };
