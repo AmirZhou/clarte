@@ -1,7 +1,6 @@
 import { createClientForServer } from '@/utils/supabase/server';
 import { signOut } from '@/utils/actions';
 import Link from 'next/link';
-import Image from 'next/image';
 
 export default async function Home() {
   const supabase = await createClientForServer();
@@ -28,7 +27,7 @@ export default async function Home() {
 
   const userName = user_name ? `@${user_name}` : 'User Name Not Set';
 
-  console.log(session);
+  // console.log(session);
 
   return (
     <div className="">
@@ -45,9 +44,6 @@ export default async function Home() {
           </button>
         </form>
       </div>
-      <Link className="btn" href="/create">
-        Create Post
-      </Link>
     </div>
   );
 }
