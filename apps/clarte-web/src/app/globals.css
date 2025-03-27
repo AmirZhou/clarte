@@ -28,6 +28,8 @@
   --color-chart-5: hsl(27 87% 67%);
   --color-login-outline: hsl(354 48% 39%);
   --color-login-forground: hsl(2 100 79);
+  --color-login-background: hsl(350 23 10%);
+  --color-login-highlighted: hsl(357 47 52%);
   --color-nav: hsla(0, 0%, 0%, 0.1);
 }
 

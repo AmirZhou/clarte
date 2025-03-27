@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export default function Sidebar() {
   return (
-    <div className="fixed left-0 top-0 bg-background z-99 h-full flex flex-col items-center pl-1 pr-4 pt-2 border-r border-border ">
+    <div className="fixed left-0 top-0 bg-background z-9 h-full flex flex-col items-center pl-1 pr-4 pt-2 border-r border-border ">
       <Link href={'/'}>
         <div className="flex gap-4">
           <SVGIcon
