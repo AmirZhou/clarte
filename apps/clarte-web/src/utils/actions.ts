@@ -36,4 +36,9 @@ const signOutAction = async () => {
   await supabase.auth.signOut();
 };
 
-export { signinWithGoogleAction, signinWithGithubAction, signOutAction };
+export {
+  signInWith,
+  signinWithGoogleAction,
+  signinWithGithubAction,
+  signOutAction,
+};

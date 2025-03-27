@@ -1,6 +1,6 @@
 import { signOutAction } from '@/utils/actions';
 import { createClientForServer } from '@/utils/supabase/server';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/shared/button';
 import Link from 'next/link';
 
 export default async function HeaderAuth() {
