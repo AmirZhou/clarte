@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import NavBar from '@/components/layouts/navbar/NavBar';
 import { Poppins } from 'next/font/google';
 import './globals.css';
 import { Sidebar } from '@/components/layouts/sidebar';
@@ -24,14 +25,15 @@ export default function RootLayout({
   return (
     // This is the recommended way to use the font, but what's the difference
     <html className={poppins.className} lang="en">
-      <body className="dark flex border-b h-screen">
+      <body className="relative dark">
+        <NavBar />
         <Sidebar />
-        <div className="overflow-y-scroll flex-1 flex items-center p-8 justify-start gap-8 ">
-          <div className="ad-side border h-96 hidden 2xl:block rounded-md ">
+        <div className="relative pl-36 flex-1 flex items-center p-8 justify-start gap-8 ">
+          <div className="ad-side border border-border h-96 hidden 2xl:block rounded-md ">
             <AdsPlaceHolder />
           </div>
           <div className="self-start w-full lg:w-9/12">{children}</div>
-          <div className="ad-side border h-96 hidden lg:block rounded-md">
+          <div className="ad-side border border-border overflow-hidden h-96 hidden lg:block rounded-md">
             <AdsPlaceHolder />
           </div>
         </div>

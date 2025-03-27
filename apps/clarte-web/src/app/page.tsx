@@ -30,9 +30,9 @@ export default async function Home() {
   // console.log(session);
 
   return (
-    <div className="">
+    <div>
       {/* continer at the center of the page  */}
-      <div className="flex flex-col items-center justify-center h-screen gap-4">
+      <div className="flex flex-col items-center justify-center gap-4">
         <h1 className="text-4xl font-bold">{name}</h1>
         <p className="text-xl">User Name: {userName}</p>
         <p className="text-xl">Email: {email}</p>

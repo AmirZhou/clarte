@@ -26,6 +26,9 @@
   --color-chart-3: hsl(197 37% 24%);
   --color-chart-4: hsl(43 74% 66%);
   --color-chart-5: hsl(27 87% 67%);
+  --color-login-outline: hsl(354 48% 39%);
+  --color-login-forground: hsl(2 100 79);
+  --color-nav: hsla(0, 0%, 0%, 0.1);
 }
 
 @layer base {
