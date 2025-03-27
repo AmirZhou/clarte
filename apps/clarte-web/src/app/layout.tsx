@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     // This is the recommended way to use the font, but what's the difference
     <html className={poppins.className} lang="en">
-      <body className="flex border-b h-screen">
+      <body className="dark flex border-b h-screen">
         <Sidebar />
         <div className="overflow-y-scroll flex-1 flex items-center p-8 justify-start gap-8 ">
           <div className="ad-side border h-96 hidden 2xl:block rounded-md ">

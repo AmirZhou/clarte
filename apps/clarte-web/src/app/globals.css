@@ -1,15 +1,17 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-clarte: #f9f8f6;
+  --color-foreground: #0a0b0c;
+  --color-background: #f9f8f6;
 }
 
-:root {
-  --background: #1d1e20;
-  --foreground: #cdcccb;
-}
+@layer base {
+  .dark {
+    --color-foreground: #f9f8f6; /* Example dark mode foreground */
+    --color-background: #0a0b0c; /* Example darker background */
+  }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
+  body {
+    @apply bg-background text-foreground;
+  }
 }
