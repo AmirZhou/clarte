@@ -81,7 +81,13 @@ export default async function SignUp(props: {
         </SubmitButton>
         <FormMessage message={searchParams} />
       </form>
-
+      <p className="text-[10px] text-secondary-foreground my-1.5">
+        By creating an account you agree to the{' '}
+        <span className="underline">Terms of Service</span> and our{' '}
+        <span className="underline">Privacy Policy</span>. We'll occasionally
+        send you emails about news, products, and services; you can opt-out
+        anytime.
+      </p>
       <p className="mt-2 text text-sm text-foreground">
         Already have an account?{' '}
         <Link className="font-medium text-link underline" href="/sign-in">

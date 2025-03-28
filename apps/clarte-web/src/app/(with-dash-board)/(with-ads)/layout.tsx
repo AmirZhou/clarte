@@ -8,7 +8,7 @@ interface AdsLayoutProps {
 export default function AdsLayout({ children }: AdsLayoutProps) {
   return (
     <>
-      <div className="relative flex-1 flex items-center p-8 justify-start gap-8 ">
+      <div className="pt-36 pl-36 relative flex-1 flex items-center p-8 justify-start gap-8 ">
         <div className="ad-side border border-border h-96 hidden 2xl:block rounded-md ">
           <AdsPlaceHolder />
         </div>
