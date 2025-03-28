@@ -1,15 +1,54 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-clarte: #f9f8f6;
+  --color-foreground: #0a0b0c;
+  --color-background: #f9f8f6; /* main background */
+  --color-link: hsl(211 100% 60%);
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(0 0% 3.9%);
+  --color-popover: hsl(0 0% 100%);
+  --color-popover-foreground: hsl(0 0% 3.9%);
+  --color-primary: hsl(0 0% 9%);
+  --color-primary-foreground: hsl(0 0% 98%);
+  --color-secondary: hsl(0 0% 96.1%);
+  --color-secondary-foreground: hsl(0 0% 9%);
+  --color-trinary: hsl(0 0% 11%);
+  --color-trinary-foreground: hsl(0 0% 18%);
+  --color-muted: hsl(0 0% 96.1%);
+  --color-muted-foreground: hsl(0 0% 45.1%);
+  --color-accent: hsl(0 0% 96.1%);
+  --color-accent-foreground: hsl(0 0% 9%);
+  --color-destructive: hsl(0 84.2% 60.2%);
+  --color-destructive-foreground: hsl(0 0% 98%);
+  --color-border: hsl(0 0% 15%);
+  --color-input: hsl(0 0% 89.8%);
+  --color-ring: hsl(0 0% 3.9%);
+  --color-chart-1: hsl(12 76% 61%);
+  --color-chart-2: hsl(173 58% 39%);
+  --color-chart-3: hsl(197 37% 24%);
+  --color-chart-4: hsl(43 74% 66%);
+  --color-chart-5: hsl(27 87% 67%);
+  --color-login-outline: hsl(354 48% 39%);
+  --color-login-forground: hsl(2 100 79);
+  --color-login-background: hsl(350 23 10%);
+  --color-login-highlighted: hsl(357 47 52%);
+  --color-nav: hsla(0, 0%, 0%, 0.1);
 }
 
-:root {
-  --background: #1d1e20;
-  --foreground: #cdcccb;
-}
+@layer base {
+  .dark {
+    --color-foreground: hsl(0 0% 87%); /* Example dark mode foreground */
+    --color-background: hsl(0 0% 7%); /* main background */
+    --color-primary: hsl(0 0% 87%);
+    --color-primary-foreground: hsl(0 0% 10%);
+    --color-secondary-foreground: hsl(60 11% 72%);
+    --color-secondary: hsl(0 0% 10%); /* sliently nerfed background */
+    --color-trinary: hsl(0 0% 11%);
+    --color-trinary-foreground: hsl(0 0% 18%);
+    --color-ring: hsl(0 0% 87%);
+  }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
+  body {
+    @apply bg-background text-foreground border-border;
+  }
 }
