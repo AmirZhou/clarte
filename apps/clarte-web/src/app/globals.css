@@ -2,7 +2,7 @@
 
 @theme {
   --color-foreground: #0a0b0c;
-  --color-background: #f9f8f6;
+  --color-background: #f9f8f6; /* main background */
   --color-link: hsl(211 100% 60%);
   --color-card: hsl(0 0% 100%);
   --color-card-foreground: hsl(0 0% 3.9%);
@@ -12,6 +12,8 @@
   --color-primary-foreground: hsl(0 0% 98%);
   --color-secondary: hsl(0 0% 96.1%);
   --color-secondary-foreground: hsl(0 0% 9%);
+  --color-trinary: hsl(0 0% 11%);
+  --color-trinary-foreground: hsl(0 0% 18%);
   --color-muted: hsl(0 0% 96.1%);
   --color-muted-foreground: hsl(0 0% 45.1%);
   --color-accent: hsl(0 0% 96.1%);
@@ -36,7 +38,14 @@
 @layer base {
   .dark {
     --color-foreground: hsl(0 0% 87%); /* Example dark mode foreground */
-    --color-background: hsl(0 0% 7%); /* Example darker background */
+    --color-background: hsl(0 0% 7%); /* main background */
+    --color-primary: hsl(0 0% 87%);
+    --color-primary-foreground: hsl(0 0% 10%);
+    --color-secondary-foreground: hsl(60 11% 72%);
+    --color-secondary: hsl(0 0% 10%); /* sliently nerfed background */
+    --color-trinary: hsl(0 0% 11%);
+    --color-trinary-foreground: hsl(0 0% 18%);
+    --color-ring: hsl(0 0% 87%);
   }
 
   body {

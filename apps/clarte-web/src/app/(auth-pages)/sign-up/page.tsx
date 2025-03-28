@@ -7,21 +7,21 @@ import {
 import { Label } from '@/components/forms/Label';
 import { Input } from '@/components/shared/input';
 import Link from 'next/link';
-import { signInAction } from '@/utils/actions';
-import { LiaGithub } from 'react-icons/lia';
+import { signUpAction } from '@/utils/actions';
 import { FaGithub } from 'react-icons/fa6';
 import { FcGoogle } from 'react-icons/fc';
 
-export default async function SignIn(props: {
+export default async function SignUp(props: {
   searchParams: Promise<Message>;
 }) {
   const searchParams = await props.searchParams;
 
   return (
-    <div className=" flex w-96 flex-col">
+    <div className="flex w-96 flex-col">
       {/* OAuth */}
-      <h1 className="text-2xl font-medium">Log into your account</h1>
+      <h1 className="text-2xl font-medium">Create your free account</h1>
       <p className="text-secondary-foreground">Connect to Clarte with:</p>
+
       <form className="w-full">
         <SubmitButton
           formAction={signinWithGithubAction}
@@ -63,12 +63,7 @@ export default async function SignIn(props: {
           placeholder="you@example.com"
           required
         />
-        <div className="flex items-center justify-between">
-          <Label htmlFor="password">Password</Label>
-          <Link className="text-xs text-link underline" href="/forgot-password">
-            Forgot Password?
-          </Link>
-        </div>
+        <Label htmlFor="password">Password</Label>
         <Input
           type="password"
           className="border"
@@ -78,7 +73,7 @@ export default async function SignIn(props: {
         />
         <SubmitButton
           pendingText="Signing In..."
-          formAction={signInAction}
+          formAction={signUpAction}
           variant="outline"
           className="border border-trinary-foreground bg-trinary "
         >
@@ -86,10 +81,11 @@ export default async function SignIn(props: {
         </SubmitButton>
         <FormMessage message={searchParams} />
       </form>
-      <p className="mt-2 text-sm text-foreground">
-        Don’t have an account?{' '}
-        <Link className="font-medium text-link underline" href="/sign-up">
-          Sign up
+
+      <p className="mt-2 text text-sm text-foreground">
+        Already have an account?{' '}
+        <Link className="font-medium text-link underline" href="/sign-in">
+          Sign in
         </Link>
       </p>
     </div>
