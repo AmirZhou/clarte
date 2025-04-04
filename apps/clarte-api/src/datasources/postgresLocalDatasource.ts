@@ -12,16 +12,16 @@ export const dataSourceOptions: DataSourceOptions = {
   entities: [
     // Adjust the path according to your project structure
     // For CLI using ts-node, direct TS path is usually fine:
-    join(__dirname, './modules/**/*.entity{.ts,.js}'),
+    join(__dirname, '.././modules/**/*.entity{.ts,.js}'),
     // Example: If entities are in 'src/modules/**/*.entity.ts'
     // join(__dirname, './modules/**/*.entity{.ts,.js}')
   ],
   // Point to your migrations directory
   migrations: [
     // Adjust path as needed. This assumes migrations are in 'src/migrations'
-    join(__dirname, './migrations/*{.ts,.js}'),
+    join(__dirname, '.././migrations/*{.ts,.js}'),
   ],
 };
-
+console.log('DataSource loaded successfully');
 const dataSource = new DataSource(dataSourceOptions);
 export default dataSource;
