@@ -1,3 +1,5 @@
+//src/modules/ipa/entities/Example.entity.ts
+
 import {
   ManyToOne,
   JoinColumn,

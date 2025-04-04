@@ -8,10 +8,12 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToMany,
 } from 'typeorm';
 
 import { SoundSubcategory } from './SoundSubcategory.entity';
 import { Example } from './Example.entity';
+import { DictionaryEntry } from '../../dictionary/entities/DictionaryEntry.Entity';
 
 @Entity('ipa_symbols')
 export class IpaSymbol {
@@ -57,4 +59,7 @@ export class IpaSymbol {
   // Inverse side of the relationship with Example
   @OneToMany(() => Example, (example) => example.ipaSymbol)
   examples: Example[];
+
+  @ManyToMany(() => DictionaryEntry, (entry) => entry.ipaSymbols)
+  dictionaryEntries: DictionaryEntry[];
 }
