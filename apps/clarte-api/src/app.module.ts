@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { Word } from './modules/ipa/entities/word.entity';
 import { IpaModule } from './modules/ipa/ipa.module';
 
 @Module({
@@ -14,7 +13,7 @@ import { IpaModule } from './modules/ipa/ipa.module';
       username: 'bitravage',
       password: '693721',
       database: 'clarte',
-      entities: [Word],
+      entities: [],
       synchronize: true, // do not use this in production
       retryAttempts: 10,
       retryDelay: 5000,

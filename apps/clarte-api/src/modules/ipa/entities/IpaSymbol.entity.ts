@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 
 import { SoundSubcategory } from './SoundSubcategory.entity';
-import { Example } from './example.entity';
+import { Example } from './Example.entity';
 
 @Entity('ipa_symbols')
 export class IpaSymbol {
