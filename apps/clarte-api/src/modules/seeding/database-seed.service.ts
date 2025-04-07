@@ -1,8 +1,7 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { DictionaryEntry } from '../dictionary/entities/DictionaryEntry.Entity';
 import { IpaSymbol } from '../ipa/entities/IpaSymbol.entity';
+import { EntityManager } from 'typeorm';
 import * as path from 'path';
 import * as fs from 'fs/promises';
 import { LanguageData, LanguageJson } from '../../types';
@@ -12,12 +11,8 @@ export class DatabaseSeedService implements OnApplicationBootstrap {
   private readonly logger = new Logger(DatabaseSeedService.name);
 
   constructor(
-    @InjectRepository(DictionaryEntry)
-    private readonly entryRepo: Repository<DictionaryEntry>,
-    @InjectRepository(IpaSymbol)
-    private readonly ipaRepo: Repository<IpaSymbol>,
-    // Inject the EntityManager if you prefer using it for transactions directly // what do you mean tho
-    // private readonly entityManager: EntityManager
+    // Inject EntityManager directly
+    private readonly entityManager: EntityManager,
   ) {}
 
   async onApplicationBootstrap() {
@@ -42,9 +37,10 @@ export class DatabaseSeedService implements OnApplicationBootstrap {
     }
 
     // Check if data exists
-    const hasEntries = await this.entryRepo.exists();
-    const hasIpaSymbols = await this.ipaRepo.exists();
-
+    // const hasEntries = await this.entryRepo.exists();
+    // const hasIpaSymbols = await this.ipaRepo.exists();
+    const hasEntries = await this.entityManager.exists(DictionaryEntry);
+    const hasIpaSymbols = await this.entityManager.exists(IpaSymbol);
     if (hasEntries && hasIpaSymbols) {
       this.logger.log(
         'Database appears to be populated. Seeding will be skipped.',
@@ -102,65 +98,61 @@ export class DatabaseSeedService implements OnApplicationBootstrap {
   }
 
   private async importData(jsonData: LanguageJson) {
-    await this.entryRepo.manager.transaction(
-      async (transactionalEntityManager) => {
-        // execute queries using transactionalEntityManager
-        this.logger.log('Starting transaction for data import.');
-        const entriesToProcess: LanguageData[] = Object.entries(
-          jsonData?.fr_FR ?? {},
-        ).map(([key, value]) => ({ [key]: value }));
+    await this.entityManager.transaction(async (transactionalEntityManager) => {
+      // execute queries using transactionalEntityManager
+      this.logger.log('Starting transaction for data import.');
+      // this line looks crazy, I can't the my head around it.
+      const entriesToProcess: LanguageData[] = Object.entries(
+        jsonData?.fr_FR ?? {},
+      ).map(([key, value]) => ({ word: key, ipaNotation: value }));
 
-        if (!entriesToProcess || entriesToProcess.length === 0) {
-          this.logger.warn(
-            'No valid entries found in the JSON data under fr_FR.',
-          );
-          return; // Or throw an error if data is expected
-        }
+      if (!entriesToProcess || entriesToProcess.length === 0) {
+        this.logger.warn(
+          'No valid entries found in the JSON data under fr_FR.',
+        );
+        return; // Or throw an error if data is expected
+      }
 
-        let processed = 0;
-        const total = entriesToProcess.length;
-        this.logger.log(`Found ${total} entries to process.`);
+      let processed = 0;
+      const total = entriesToProcess.length;
+      this.logger.log(`Found ${total} entries to process.`);
 
-        for (const { word, ipaNotation } of entriesToProcess) {
-          try {
-            const newEntry = transactionalEntityManager.create(
-              DictionaryEntry,
-              {
-                frenchEntry: word,
-                ipaNotation: ipaNotation,
-                length: word.length,
-              },
+      for (const { word, ipaNotation } of entriesToProcess) {
+        try {
+          const newEntry = transactionalEntityManager.create(DictionaryEntry, {
+            frenchEntry: word,
+            ipaNotation: ipaNotation,
+            length: word.length,
+          });
+          await transactionalEntityManager.save(DictionaryEntry, newEntry);
+          const ipas = this.parseIpa(ipaNotation);
+          await this.linkIpaSymbols(transactionalEntityManager, newEntry, ipas);
+          processed++;
+          if (processed % 100 === 0 || processed === total) {
+            this.logger.log(
+              `Processed <span class="math-inline">${processed}/</span>{total} entries (${Math.round((processed / total) * 100)}%)`,
             );
-            await transactionalEntityManager.save(DictionaryEntry, newEntry);
-            const ipas = this.parseIpa(ipaNotation);
-            await this.linkIpaSymbols(newEntry, ipas);
-            processed++;
-            if (processed % 100 === 0 || processed === total) {
-              this.logger.log(
-                `Processed <span class="math-inline">${processed}/</span>{total} entries (${Math.round((processed / total) * 100)}%)`,
-              );
-            }
-          } catch (error) {
-            let detailedErrorMessage =
-              'An unknown error occurred processing the entry.';
-            if (error instanceof Error) {
-              detailedErrorMessage = error.message; // Safe access
-            } else {
-              detailedErrorMessage = String(error); // Handle non-Error throws
-            }
-            this.logger.error(
-              `Failed to process entry: [${word}, ${ipaNotation}]`,
-              // Pass the extracted message as a separate argument to the logger
-              detailedErrorMessage,
-              // Optionally pass the original error's stack if available and it was an Error
-              error instanceof Error ? error.stack : undefined,
-            );
-            // Throwing error here will automatically rollback the transaction
-            throw error;
           }
+        } catch (error) {
+          let detailedErrorMessage =
+            'An unknown error occurred processing the entry.';
+          if (error instanceof Error) {
+            detailedErrorMessage = error.message; // Safe access
+          } else {
+            detailedErrorMessage = String(error); // Handle non-Error throws
+          }
+          this.logger.error(
+            `Failed to process entry: [${word}, ${ipaNotation}]`,
+            // Pass the extracted message as a separate argument to the logger
+            detailedErrorMessage,
+            // Optionally pass the original error's stack if available and it was an Error
+            error instanceof Error ? error.stack : undefined,
+          );
+          // Throwing error here will automatically rollback the transaction
+          throw error;
         }
-      },
-    );
+      }
+    });
     this.logger.log('Transaction committed successfully.');
   }
   private parseIpa(ipaNotation: string): string[] {
@@ -168,21 +160,35 @@ export class DatabaseSeedService implements OnApplicationBootstrap {
   }
 
   private async linkIpaSymbols(
+    transactionalEntityManager: EntityManager,
     dictionEntry: DictionaryEntry,
     symbols: string[],
   ) {
-    const ipaEntities = await Promise.all(
-      symbols.map(async (symbol) => {
-        let ipa = await this.ipaRepo.findOne({ where: { symbol: symbol } });
+    // 1. Get the unique symbols from the input array
+    const uniqueSymbols = [...new Set(symbols)];
+    this.logger.debug(
+      `Entry: ${dictionEntry.frenchEntry}, Original symbols: ${symbols.length}, Unique symbols: ${uniqueSymbols.length}`,
+    );
+
+    const uniqueIpaEntities = await Promise.all(
+      uniqueSymbols.map(async (symbol) => {
+        let ipa = await transactionalEntityManager.findOne(IpaSymbol, {
+          where: { symbol: symbol },
+        });
 
         if (!ipa) {
-          ipa = this.ipaRepo.create({ symbol });
-          await this.ipaRepo.save(ipa);
+          this.logger.debug(`Creating new IpaSymbol for: ${symbol}`);
+          ipa = transactionalEntityManager.create(IpaSymbol, { symbol });
+          await transactionalEntityManager.save(ipa);
         }
         return ipa;
       }),
     );
-    dictionEntry.ipaSymbols = ipaEntities;
-    await this.entryRepo.save(dictionEntry);
+    const symbolMap = new Map<string, IpaSymbol>();
+    uniqueIpaEntities.forEach((entity) => symbolMap.set(entity.symbol, entity));
+    dictionEntry.ipaSymbols = uniqueSymbols
+      .map((originalSymbol) => symbolMap.get(originalSymbol))
+      .filter((entity): entity is IpaSymbol => entity !== undefined); // Filter out potential undefined if map failed
+    await transactionalEntityManager.save(DictionaryEntry, dictionEntry);
   }
 }

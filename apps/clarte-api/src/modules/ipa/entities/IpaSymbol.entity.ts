@@ -22,15 +22,16 @@ export class IpaSymbol {
 
   // Owning side of the relationship with SoundSubcategory
   @ManyToOne(() => SoundSubcategory, (subcategory) => subcategory.ipaSymbols, {
-    nullable: false,
-    onDelete: 'RESTRICT', // Match DB constraint
+    nullable: true, // <--- CHANGE THIS TO true
+    onDelete: 'SET NULL', // Or 'RESTRICT', 'NO ACTION'. Consider what happens if a subcategory is deleted. 'SET NULL' is common with nullable relationships.
+    // eager: false, // Eager loading is often false by default, but good to be explicit if needed
   })
   @JoinColumn({ name: 'subcategory_id' })
-  subcategory: SoundSubcategory;
+  subcategory: SoundSubcategory | null;
 
   @Index() // Index the foreign key ID column
-  @Column({ name: 'subcategory_id' })
-  subcategoryId: number;
+  @Column({ name: 'subcategory_id', nullable: true })
+  subcategoryId: number | null;
 
   @Index({ unique: true }) // Index and ensure uniqueness
   @Column({ type: 'varchar', length: 20 })

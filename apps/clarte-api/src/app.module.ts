@@ -6,6 +6,7 @@ import { IpaModule } from './modules/ipa/ipa.module';
 import { DictionaryModule } from './modules/dictionary/dictionary.module';
 import { dataSourceOptions } from './datasources/postgresLocalDatasource';
 import { ConfigModule } from '@nestjs/config';
+import { SeedingModule } from './modules/seeding/seeding.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ConfigModule } from '@nestjs/config';
     // Feature Modules (these likely provide the entities/repos used in seeding)
     IpaModule,
     DictionaryModule,
+    SeedingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
