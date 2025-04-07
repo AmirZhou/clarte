@@ -1,3 +1,7 @@
 export interface LanguageData {
-  [locale: string]: string;
+  [word: string]: string;
+}
+
+export interface LanguageJson {
+  [locale: string]: LanguageData;
 }

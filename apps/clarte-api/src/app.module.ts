@@ -3,24 +3,28 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { IpaModule } from './modules/ipa/ipa.module';
+import { DictionaryModule } from './modules/dictionary/dictionary.module';
+import { dataSourceOptions } from './datasources/postgresLocalDatasource';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 7777,
-      username: 'bitravage',
-      password: '693721',
-      database: 'clarte',
-      entities: [],
-      synchronize: true, // do not use this in production
-      retryAttempts: 10,
-      retryDelay: 5000,
-      autoLoadEntities: false,
-      migrations: ['src/database/migrations/*.ts'],
+    // Optional: Load environment variables globally using NestJS ConfigModule
+    // This is often preferred over 'dotenv/config' in datasource.ts for NestJS apps
+    // Make sure ConfigModule is imported BEFORE TypeOrmModule if TypeOrmModule relies on env vars
+    ConfigModule.forRoot({
+      isGlobal: true, // Makes .env variables available throughout the application
     }),
+    // Once this (this forRoot) is done, the TypeORM DataSource and EntityManager objects will be available to inject across the entire project (without needing to import any modules), Ref: https://docs.nestjs.com/techniques/database
+    TypeOrmModule.forRoot({
+      ...dataSourceOptions,
+      entities: undefined,
+      migrations: undefined,
+      autoLoadEntities: true,
+    }),
+    // Feature Modules (these likely provide the entities/repos used in seeding)
     IpaModule,
+    DictionaryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
