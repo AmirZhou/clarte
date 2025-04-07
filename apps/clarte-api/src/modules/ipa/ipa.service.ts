@@ -1,16 +1,16 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Word } from './entities/word.entity';
 import { Injectable } from '@nestjs/common';
+import { IpaSymbol } from './entities/IpaSymbol.entity';
 
 @Injectable()
 export class IpaService {
   constructor(
-    @InjectRepository(Word)
-    private wordRepository: Repository<Word>,
+    @InjectRepository(IpaSymbol)
+    private ipaSymbolRepository: Repository<IpaSymbol>,
   ) {}
 
-  findAll(): Promise<Word[]> {
-    return this.wordRepository.find();
+  findAll(): Promise<IpaSymbol[]> {
+    return this.ipaSymbolRepository.find();
   }
 }
