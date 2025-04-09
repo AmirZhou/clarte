@@ -1,5 +1,5 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
-import { DictionaryEntry } from '../dictionary/entities/DictionaryEntry.Entity';
+import { DictionaryEntry } from '../dictionary/entities/DictionaryEntry.entity';
 import { IpaSymbol } from '../ipa/entities/IpaSymbol.entity';
 import { EntityManager } from 'typeorm';
 import * as path from 'path';

@@ -1,7 +1,7 @@
 // src/database/seeding/seeding.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DictionaryEntry } from '../dictionary/entities/DictionaryEntry.Entity';
+import { DictionaryEntry } from './entities/DictionaryEntry.entity';
 import { IpaSymbol } from '../ipa/entities/IpaSymbol.entity'; // Adjust path
 
 @Module({

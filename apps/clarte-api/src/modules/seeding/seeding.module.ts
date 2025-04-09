@@ -2,7 +2,7 @@
 import { Module, Logger } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseSeedService } from './database-seed.service';
-import { DictionaryEntry } from '../dictionary/entities/DictionaryEntry.Entity';
+import { DictionaryEntry } from '../dictionary/entities/DictionaryEntry.entity';
 import { IpaSymbol } from '../ipa/entities/IpaSymbol.entity'; // Adjust path
 
 @Module({

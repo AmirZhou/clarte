@@ -6,7 +6,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { IpaSymbol } from './entities/IpaSymbol.entity';
-import { DictionaryEntry } from '../dictionary/entities/DictionaryEntry.Entity';
+import { DictionaryEntry } from '../dictionary/entities/DictionaryEntry.entity';
 import { DictionaryEntryExampleDto } from '../dictionary/dto/dictionary-entry-example.dto';
 import { instanceToPlain } from 'class-transformer';
 

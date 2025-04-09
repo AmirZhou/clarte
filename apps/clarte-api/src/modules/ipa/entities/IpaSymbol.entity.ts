@@ -13,7 +13,7 @@ import {
 
 import { SoundSubcategory } from './SoundSubcategory.entity';
 import { Example } from './Example.entity';
-import { DictionaryEntry } from '../../dictionary/entities/DictionaryEntry.Entity';
+import { DictionaryEntry } from '../../dictionary/entities/DictionaryEntry.entity';
 
 @Entity('ipa_symbols')
 export class IpaSymbol {
