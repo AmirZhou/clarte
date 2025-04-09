@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "incremental": true,
+    "rootDir": "src",
+    "outDir": "dist",
+    "target": "ES2017",
+    "module": "commonjs",
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "noEmit": true, // Emit only .d.ts files (so no compiled JS)
+    "lib": ["ESNext"],
+    "allowJs": true,
+    "checkJs": true,
+    "composite": true,
+    // Allows a TypeScript project (or sub-directory that is to be treated as a separate TS project) to be referenced from a separate TS project
+    // When to Use:
+    // When you have nested TypeScript projects that depend on each other as part of their build process, often used when you want to break apart a large TS project into smaller sub-projects to improve compile times
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true
+  }
+}
