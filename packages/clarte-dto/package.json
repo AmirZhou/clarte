@@ -1,0 +1,22 @@
+{
+  "name": "@clarte/dto",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.d.ts",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "keywords": [],
+  "author": "BitRavage",
+  "license": "ISC",
+  "dependencies": {
+    "class-transformer": "^0.5.1",
+    "typescript": "^5.7.3"
+  }
+}
