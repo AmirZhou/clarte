@@ -25,7 +25,7 @@ import { FindExamplesQueryDto } from './dto/find-examples-query.dto';
 export class IpaController {
   constructor(private readonly ipaService: IpaService) {}
 
-  @Get(':symbols/examples')
+  @Get(':symbol/examples')
   @ApiOperation({
     summary: 'Find random dictionary examples for an IPA symbol',
   })
@@ -59,6 +59,7 @@ export class IpaController {
   ): Promise<DictionaryEntryExampleDto[]> {
     try {
       const limit = queryDto.limit ?? 30;
+
       return await this.ipaService.findRandomDictionaryExamples(symbol, limit);
     } catch (error) {
       if (error instanceof NotFoundException) {

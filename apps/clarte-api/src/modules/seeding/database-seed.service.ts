@@ -5,6 +5,7 @@ import { EntityManager } from 'typeorm';
 import * as path from 'path';
 import * as fs from 'fs/promises';
 import { LanguageData, LanguageJson } from '../../types';
+import GraphemeSplitter from 'grapheme-splitter';
 
 @Injectable()
 export class DatabaseSeedService implements OnApplicationBootstrap {
@@ -65,7 +66,8 @@ export class DatabaseSeedService implements OnApplicationBootstrap {
     this.logger.log('Starting database sedding process...');
 
     try {
-      const dataPath = path.join(process.cwd(), 'fr_FR.json');
+      const dataPath = path.join(process.cwd(), 'fr_FR_dev.json');
+      // const dataPath = path.join(process.cwd(), 'fr_FR.json');
       this.logger.log(`Loading data from: ${dataPath}`);
       const rawData = await fs.readFile(dataPath, 'utf8');
       const jsonData = JSON.parse(rawData) as LanguageJson;
@@ -156,7 +158,14 @@ export class DatabaseSeedService implements OnApplicationBootstrap {
     this.logger.log('Transaction committed successfully.');
   }
   private parseIpa(ipaNotation: string): string[] {
-    return [...ipaNotation.replace(/^\/|\/$/g, '')];
+    const splitter = new GraphemeSplitter();
+
+    const allSymbols = ipaNotation
+      .split(',')
+      .map((p) => p.trim().replace(/^\/|\/$/g, '')) // clean slashes
+      .flatMap((cleaned) => splitter.splitGraphemes(cleaned));
+
+    return [...new Set(allSymbols)];
   }
 
   private async linkIpaSymbols(

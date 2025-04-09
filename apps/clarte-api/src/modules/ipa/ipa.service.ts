@@ -23,22 +23,26 @@ export class IpaService {
     return this.ipaSymbolRepository.find();
   }
 
-  /**
-   * Finds a random sample of dictionary entries containing the given IPA symbol.
-   * WARNING: Uses ORDER BY RANDOM(), which can be slow on large datasets.
-   */
   async findRandomDictionaryExamples(
     symbol: string,
     limit: number,
   ): Promise<DictionaryEntryExampleDto[]> {
     const ipaSymbol = await this.ipaSymbolRepository.findOne({
-      where: { symbol },
-      select: ['id', 'symbol'], // Only select ID
+      // where: { symbol },
+      // select: ['id', 'symbol'], // Only select ID
+      select: {
+        id: true,
+        symbol: true,
+      },
+      where: {
+        symbol: symbol,
+      },
     });
     if (!ipaSymbol) {
       throw new NotFoundException(`IPA symbol '${symbol}' not found.`);
     }
     try {
+      console.log(ipaSymbol);
       // Use QueryBuilder to join DictionaryEntry with IpaSymbol via the join table
       // and fetch a random sample.
       const entries = await this.dictionaryEntryRepository

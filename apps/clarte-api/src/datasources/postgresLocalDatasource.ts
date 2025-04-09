@@ -5,7 +5,8 @@ import { join } from 'path';
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
   host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '7777', 10),
+  // port: parseInt(process.env.DB_PORT || '7777', 10),
+  port: parseInt(process.env.DB_PORT || '7999', 10), // with tiny dic for testing
   username: process.env.DB_USERNAME || 'bitravage', // Replace with your default or use env
   password: process.env.DB_PASSWORD || '693721', // Replace with your default or use env
   database: process.env.DB_DATABASE || 'clarte', // Replace with your default or use env
