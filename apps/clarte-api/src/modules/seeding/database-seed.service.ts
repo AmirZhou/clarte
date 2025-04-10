@@ -66,7 +66,7 @@ export class DatabaseSeedService implements OnApplicationBootstrap {
     this.logger.log('Starting database sedding process...');
 
     try {
-      const dataPath = path.join(process.cwd(), 'fr_FR_dev.json');
+      const dataPath = path.join(process.cwd(), 'fr_FR.json');
       // const dataPath = path.join(process.cwd(), 'fr_FR.json');
       this.logger.log(`Loading data from: ${dataPath}`);
       const rawData = await fs.readFile(dataPath, 'utf8');

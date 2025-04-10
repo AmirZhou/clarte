@@ -30,10 +30,15 @@ export class Example {
   @Column({ name: 'ipa_symbol_id' })
   ipaSymbolId: number;
 
-  @Column({ type: 'varchar', length: 512 })
+  @Column({ name: 'french_text', type: 'varchar', length: 512 })
   frenchText: string; // 'papa', 'à aucun moment'
 
-  @Column({ type: 'varchar', length: 512, nullable: true })
+  @Column({
+    name: 'english_translation',
+    type: 'varchar',
+    length: 512,
+    nullable: true,
+  })
   englishTranslation?: string;
 
   @Column({
