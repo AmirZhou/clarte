@@ -4,10 +4,15 @@
   "description": "A french learning app that doesn't suck",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:dto": "tsc -p packages/clarte-dto",
+    "build:shared": "pnpm --filter ./packages/** run build"
   },
   "keywords": [],
   "author": "Yue Amir Zhou with BitRavage",
   "license": "ISC",
-  "packageManager": "pnpm@10.5.2"
+  "packageManager": "pnpm@10.5.2",
+  "dependencies": {
+    "class-validator": "^0.14.1"
+  }
 }
