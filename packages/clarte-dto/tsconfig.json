@@ -6,8 +6,8 @@
     "target": "ES2017",
     "module": "commonjs",
     "declaration": true,
-    "emitDeclarationOnly": true,
-    "noEmit": true, // Emit only .d.ts files (so no compiled JS)
+    // "noEmit": true, // Emit only .d.ts files (so no compiled JS)
+    // shouldn't be here, this shit set nothing will be output
     "lib": ["ESNext"],
     "allowJs": true,
     "checkJs": true,

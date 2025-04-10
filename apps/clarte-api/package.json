@@ -14,6 +14,7 @@
     "typeorm": "typeorm-ts-node-commonjs -d ./src/datasources/postgresLocalDatasource.ts"
   },
   "dependencies": {
+    "@clarte/dto": "workspace:*",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",

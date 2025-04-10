@@ -16,8 +16,8 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { IpaService } from './ipa.service';
-import { DictionaryEntryExampleDto } from '../dictionary/dto/dictionary-entry-example.dto';
-import { FindExamplesQueryDto } from './dto/find-examples-query.dto';
+import { DictionaryEntryExampleDto } from '@clarte/dto';
+import { FindExamplesQueryDto } from '@clarte/dto';
 
 @ApiTags('IPA Symbols')
 @Controller('ipa-symbols')
