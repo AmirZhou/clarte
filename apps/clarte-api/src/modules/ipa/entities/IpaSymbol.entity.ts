@@ -40,7 +40,7 @@ export class IpaSymbol {
   @Column({ type: 'text', nullable: true })
   description?: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ name: 'pronunciation_guide', type: 'text', nullable: true })
   pronunciationGuide?: string;
 
   @Column({

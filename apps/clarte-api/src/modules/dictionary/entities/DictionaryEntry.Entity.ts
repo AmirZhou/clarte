@@ -14,10 +14,10 @@ export class DictionaryEntry {
   id: number;
 
   @Index()
-  @Column({ type: 'varchar', length: 255, unique: true })
+  @Column({ name: 'french_entry', type: 'varchar', length: 255, unique: true })
   frenchEntry: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ name: 'ipa_notation', type: 'varchar', length: 255 })
   ipaNotation: string;
 
   @Column({ type: 'text', nullable: true })

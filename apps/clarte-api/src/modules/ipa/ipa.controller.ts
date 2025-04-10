@@ -16,8 +16,13 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { IpaService } from './ipa.service';
-import { DictionaryEntryExampleDto } from '@clarte/dto';
-import { FindExamplesQueryDto } from '@clarte/dto';
+import {
+  DictionaryEntryExampleDto,
+  FindExamplesQueryDto,
+  FindAllIpaQueryDto,
+  IpaWithExamplesDto,
+} from '@clarte/dto';
+import { plainToInstance } from 'class-transformer';
 
 @ApiTags('IPA Symbols')
 @Controller('ipa-symbols')
@@ -60,12 +65,34 @@ export class IpaController {
     try {
       const limit = queryDto.limit ?? 30;
 
-      return await this.ipaService.findRandomDictionaryExamples(symbol, limit);
+      const entries = await this.ipaService.findRandomDictionaryExamples(
+        symbol,
+        limit,
+      );
+      const dtos = plainToInstance(DictionaryEntryExampleDto, entries, {
+        excludeExtraneousValues: true,
+      });
+      return dtos;
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw new NotFoundException(error.message);
       }
       throw new InternalServerErrorException('Could not fetch examples.');
     }
+  }
+
+  @Get('all')
+  async getAllSymbols(
+    @Query() queryDto: FindAllIpaQueryDto,
+  ): Promise<IpaWithExamplesDto[]> {
+    const isLoadExamples = queryDto.withExamples ?? true; // what's the industry common sense of this const naming?
+    const limit = queryDto.limit ?? 30;
+
+    const symbols = await this.ipaService.findAll(isLoadExamples, limit);
+    // console.log(symbols[0]);
+    const dtos = plainToInstance(IpaWithExamplesDto, symbols); // this entities are considered plain, interesting, shouldn't I use InstanToInstance
+
+    // console.log(dtos[0]);
+    return dtos;
   }
 }

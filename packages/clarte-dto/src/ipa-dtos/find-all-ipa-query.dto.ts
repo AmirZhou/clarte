@@ -1,7 +1,12 @@
 import { Type } from 'class-transformer';
-import { IsInt, IsOptional, Max, Min } from 'class-validator';
+import { IsBoolean, IsOptional, IsInt, Min, Max } from 'class-validator';
 
-export class FindExamplesQueryDto {
+export class FindAllIpaQueryDto {
+  @IsOptional()
+  @Type(() => Boolean)
+  @IsBoolean()
+  withExamples?: boolean;
+
   @IsOptional()
   @Type(() => Number) // why i need type here, if it's defined here, do I don't nee parseInt pipe
   @IsInt()
