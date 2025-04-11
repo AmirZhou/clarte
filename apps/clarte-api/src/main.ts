@@ -14,7 +14,11 @@ async function bootstrap() {
   );
 
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector))); // Pass Reflector
-
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    methods: 'GET,HEAD,PUT,POST',
+    credentials: true, // Allow cookies to be sent (if using authentication)
+  });
   await app.listen(process.env.PORT ?? 23010);
 }
 bootstrap();
