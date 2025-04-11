@@ -165,7 +165,11 @@ export class DatabaseSeedService implements OnApplicationBootstrap {
       .map((p) => p.trim().replace(/^\/|\/$/g, '')) // clean slashes
       .flatMap((cleaned) => splitter.splitGraphemes(cleaned));
 
-    return [...new Set(allSymbols)];
+    const unwantedSymbols = ['ː', '.', 'ʼ', ' '];
+    const filteredSymbols = allSymbols.filter(
+      (symbol) => !unwantedSymbols.includes(symbol),
+    );
+    return [...new Set(filteredSymbols)];
   }
 
   private async linkIpaSymbols(

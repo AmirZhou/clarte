@@ -15,7 +15,7 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector))); // Pass Reflector
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: process.env.NEXT_PUBLIC_SITE_URL,
     methods: 'GET,HEAD,PUT,POST',
     credentials: true, // Allow cookies to be sent (if using authentication)
   });

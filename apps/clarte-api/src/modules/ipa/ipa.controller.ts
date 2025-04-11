@@ -90,7 +90,7 @@ export class IpaController {
 
     const symbols = await this.ipaService.findAll(isLoadExamples, limit);
     // console.log(symbols[0]);
-    const dtos = plainToInstance(IpaWithExamplesDto, symbols); // this entities are considered plain, interesting, shouldn't I use InstanToInstance
+    const dtos = plainToInstance(IpaWithExamplesDto, symbols); // alternative: instance to instance
 
     // console.log(dtos[0]);
     return dtos;
