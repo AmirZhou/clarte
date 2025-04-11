@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  transpilePackages: ['@clarte/dto'],
 };
 
 export default nextConfig;

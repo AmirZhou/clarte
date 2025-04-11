@@ -2,6 +2,7 @@
 import { useSupabaseSession } from '@/hooks/useAuth/useSupabaseSession';
 import createClientForBrowser from '@/utils/supabase/client';
 import { Button } from '@/components/shared/button';
+import { IPASymbolIcon } from '@/components/icons';
 
 export default function TestSession() {
   const supabase = createClientForBrowser();
@@ -11,6 +12,10 @@ export default function TestSession() {
       <div className="ml-64 mt-32">
         <h1>not authenticated</h1>
         <div className="h-32 w-32 bg-chart-2"></div>
+        {/* test ipa icons */}
+        <div className="flex justify-center items-center">
+          <IPASymbolIcon symbol="œ̃" />
+        </div>
       </div>
     );
   return (

@@ -1,6 +1,11 @@
 @import 'tailwindcss';
 
 @theme {
+  /* fonts */
+  --font-poppins: var(--font-poppins);
+  --font-ipa: var(--font-doulos-sil);
+
+  /* colors */
   --color-foreground: #0a0b0c;
   --color-background: #f9f8f6; /* main background */
   --color-link: hsl(211 100% 60%);

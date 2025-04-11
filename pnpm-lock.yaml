@@ -138,6 +138,9 @@ importers:
 
   apps/clarte-web:
     dependencies:
+      '@clarte/dto':
+        specifier: workspace:*
+        version: link:../../packages/clarte-dto
       '@radix-ui/react-label':
         specifier: ^2.1.2
         version: 2.1.2(@types/react-dom@19.0.4(@types/react@19.0.10))(@types/react@19.0.10)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
