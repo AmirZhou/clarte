@@ -1,6 +1,7 @@
 import IPAInfo from './components/IPAInfo';
 import { IpaWithExamplesDto } from '@clarte/dto';
 import { IPASymbolIcon } from '@/components/icons';
+import IpaInteractionWrapper from './components/IpaInteractionWrapper';
 
 async function getIpaData(): Promise<IpaWithExamplesDto[]> {
   const internalApiUrl = process.env.NEXT_PUBLIC_VERCEL_URL
@@ -29,20 +30,10 @@ async function getIpaData(): Promise<IpaWithExamplesDto[]> {
 
 export default async function Page() {
   const allSymbolsWithExamples = await getIpaData();
-  console.log(allSymbolsWithExamples);
 
   return (
-    <div className="flex gap-16 w-full justify-center">
-      <div className="w-1/2 flex flex-col gap-4">
-        <h2 className="text-2xl">French IPA Chart</h2>
-        <div className="ipa-full-chart flex flex-wrap gap-2 justify-center">
-          {/* Added flex, flex-wrap, gap-2 and justify-center for layout */}
-          {allSymbolsWithExamples.map((symbol) => (
-            <IPASymbolIcon key={symbol.id} symbol={symbol.symbol} />
-          ))}
-        </div>
-      </div>
-      <IPAInfo />
-    </div>
+    <>
+      <IpaInteractionWrapper symbolsData={allSymbolsWithExamples} />
+    </>
   );
 }

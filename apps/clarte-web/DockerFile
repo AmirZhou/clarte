@@ -1,0 +1,42 @@
+# Stage 1: Base setup and dependency installation
+FROM node:22-alpine AS base
+# Enable corepack for pnpm
+RUN corepack enable pnpm && corepack install -g pnpm@latest-10
+
+# ---- Builder Stage ----
+# Stage 2: Dependency caching and build
+FROM base AS builder
+WORKDIR /clarte
+
+# Copy root files to leverage pnpm workspace
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml  ./
+# Copy shared package and front-end app manifests
+COPY apps/clarte-web/package.json ./apps/clarte-web
+COPY packages/clarte-dto/package.json ./packages/clarte-dto
+# use fetch instead
+RUN pnpm fetch --prod
+
+# Install ALL monorepo dependencies
+# RUN pnpm install --frozen-lockfile --prod
+RUN pnpm install -r --offline --prod
+
+# Bundle app source
+ADD . ./
+
+# Build the shared package
+RUN pnpm --filter=@clarte/dto... build
+# Build the web
+RUN pnpm --filter=clarte-web... build
+
+
+# ---- Final Stage ----
+FROM node:22-alpine AS final
+WORKDIR /clarte
+
+# Copy production node_modules from the builder stage
+COPY --from=builder /clarte/node_modules ./node_modules
+
+# Copy the built shared package output from the builder stage
+COPY --from=builder /clarte/packages/clarte-dto/dist ./packages/clarte-dto/dist
+# Copy the built frontend application output from the builder stage
+# Adjust the path to the frontend's build output directory (e.g., dist, build, .next)
