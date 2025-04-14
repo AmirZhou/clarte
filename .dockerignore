@@ -1,0 +1,13 @@
+# Example .dockerignore
+.git
+node_modules # Usually built inside the container
+npm-debug.log
+*.log
+.env*
+.DS_Store
+apps/clarte-api/dist # Example build output you might want to exclude
+apps/clarte-web/.next
+# Add any other files/folders not needed in the container image 
+
+# Ignore all node_modules directories anywhere in the project
+**/node_modules

@@ -12,13 +12,11 @@ WORKDIR /app
 # Copy root files to leverage pnpm workspace
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml  ./
 # Copy shared package and front-end app manifests
-COPY apps/clarte-web/package.json ./apps/clarte-web
-COPY packages/clarte-dto/package.json ./packages/clarte-dto
-# use fetch instead
-RUN pnpm fetch
+COPY apps/clarte-web/package.json ./apps/clarte-web/
+COPY packages/clarte-dto/package.json ./packages/clarte-dto/
 
 # Install ALL monorepo dependencies
-RUN pnpm install -r --offline --frozen-lockfile
+RUN pnpm install -r --frozen-lockfile
 
 # Bundle app source
 ADD . ./
