@@ -1,12 +1,13 @@
 # Stage 1: Base setup and dependency installation
-FROM node:22-alpine AS base
+FROM node:18-alpine AS base
 # Enable corepack for pnpm
 RUN corepack enable pnpm && corepack install -g pnpm@latest-10
+RUN apk add --no-cache libc6-compat
 
 # ---- Builder Stage ----
 # Stage 2: Dependency caching and build
 FROM base AS builder
-WORKDIR /clarte
+WORKDIR /app
 
 # Copy root files to leverage pnpm workspace
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml  ./
@@ -14,11 +15,10 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml  ./
 COPY apps/clarte-web/package.json ./apps/clarte-web
 COPY packages/clarte-dto/package.json ./packages/clarte-dto
 # use fetch instead
-RUN pnpm fetch --prod
+RUN pnpm fetch
 
 # Install ALL monorepo dependencies
-# RUN pnpm install --frozen-lockfile --prod
-RUN pnpm install -r --offline --prod
+RUN pnpm install -r --offline --frozen-lockfile
 
 # Bundle app source
 ADD . ./
@@ -30,13 +30,34 @@ RUN pnpm --filter=clarte-web... build
 
 
 # ---- Final Stage ----
-FROM node:22-alpine AS final
-WORKDIR /clarte
+FROM node:18-alpine AS runner
 
-# Copy production node_modules from the builder stage
-COPY --from=builder /clarte/node_modules ./node_modules
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+USER nextjs
+
+WORKDIR /app
+
+# what this do
+ENV NODE_ENV=production
+ENV PORT=3000
 
 # Copy the built shared package output from the builder stage
-COPY --from=builder /clarte/packages/clarte-dto/dist ./packages/clarte-dto/dist
-# Copy the built frontend application output from the builder stage
-# Adjust the path to the frontend's build output directory (e.g., dist, build, .next)
+# remove for now because i got transpile package in the config
+# COPY --from=builder --chown=nextjs:nodejs /app/packages/clarte-dto/dist ./packages/clarte-dto/dist
+
+# Copy the built frontend application output from the builder stage, 
+# enabling standalong mode, it got its file structure handled, so just to root folder.
+COPY --from=builder --chown=nextjs:nodejs /app/apps/clarte-web/.next/standalone ./
+# Copy static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/clarte-web/.next/static ./apps/clarte-web/.next/static
+# Copy the public
+COPY --from=builder --chown=nextjs:nodejs /app/apps/clarte-web/public ./apps/clarte-web/public
+
+EXPOSE 3000
+
+
+
+# server.js will be in the root of the standalone folder, which got copied to the app working folder.
+CMD ["node", "server.js"]

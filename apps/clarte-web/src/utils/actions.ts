@@ -91,6 +91,7 @@ const signOutAction = async () => {
 
 export {
   signInAction,
+  signInWith,
   signinWithGoogleAction,
   signinWithGithubAction,
   signOutAction,

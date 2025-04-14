@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
     ],
   },
   transpilePackages: ['@clarte/dto'],
+  output: 'standalone', // Add or ensure this line is present
 };
 
 export default nextConfig;
