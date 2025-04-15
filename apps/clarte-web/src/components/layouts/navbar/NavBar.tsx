@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { LoginButton } from './LoginButton';
 import { useSupabaseSession } from '@/hooks/useAuth/useSupabaseSession';
-import Image from 'next/Image';
+import Image from 'next/image';
 import createClientForBrowser from '@/utils/supabase/client';
 
 interface NavBarProps {}
