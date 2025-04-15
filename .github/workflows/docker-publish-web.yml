@@ -57,6 +57,12 @@ jobs:
           ls -la ./apps/clarte-web/
           echo "--- Checking existence of specified Dockerfile:"
           ls -la ./apps/clarte-web/Dockerfile || echo "FILE ./apps/clarte-web/Dockerfile NOT FOUND by ls"
+          echo "--- Listing src/components/forms directory:"
+          ls -la ./apps/clarte-web/src/components/forms/
+          echo "--- Checking specific component files (case matters!):"
+          ls -la ./apps/clarte-web/src/components/forms/form-message.* || echo "form-message.* NOT FOUND"
+          ls -la ./apps/clarte-web/src/components/forms/SubmitButton.* || echo "SubmitButton.* NOT FOUND"
+          ls -la ./apps/clarte-web/src/components/forms/Label.* || echo "Label.* NOT FOUND"
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
