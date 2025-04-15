@@ -53,9 +53,11 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/clarte-web/.next/static ./ap
 # Copy the public
 COPY --from=builder --chown=nextjs:nodejs /app/apps/clarte-web/public ./apps/clarte-web/public
 
+
+
 EXPOSE 3000
 
 
 
 # server.js will be in the root of the standalone folder, which got copied to the app working folder.
-CMD ["node", "server.js"]
+CMD ["node", "apps/clarte-web/server.js"]
