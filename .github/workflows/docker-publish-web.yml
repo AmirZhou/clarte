@@ -74,7 +74,7 @@ jobs:
       - name: Run Smoke Test
         run: |
           echo "Running smoke test on image ${{ steps.meta.outputs.tags }}"
-          docker run -d --name test-app -p 3000:3000 ghcr.io/${{ github.repository_owner }}/clarte-web:${{ steps.meta.outputs.version }}
+          docker run -d --name test-app -p 3000:3000 ghcr.io/amirzhou/clarte-web:${{ steps.meta.outputs.version }}
 
           echo "Waiting for app to start..."
           sleep 20
