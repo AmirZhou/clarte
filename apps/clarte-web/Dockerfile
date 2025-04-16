@@ -9,6 +9,16 @@ RUN apk add --no-cache libc6-compat
 FROM base AS builder
 WORKDIR /app
 
+ARG NESTJS_API_URL
+ARG NEXT_PUBLIC_SUPABASE_URL
+ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+ARG NEXT_PUBLIC_SITE_URL
+
+ENV NEXT_PUBLIC_SITE_URLL=$NEXT_PUBLIC_SITE_URL
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
+ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
+ENV NESTJS_API_URL=$NESTJS_API_URL
+
 # Copy root files to leverage pnpm workspace
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml  ./
 # Copy shared package and front-end app manifests
