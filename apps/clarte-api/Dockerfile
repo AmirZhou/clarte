@@ -35,9 +35,9 @@ ENV NODE_ENV=production
 
 
 ## since in nestjs, there's no transpile package configuration like Nextjs, I gotta copy the dto build artifact
-COPY --from=builder --chown=nestjs:nodejs /app/packages/clarto-dto/dist ./packages/clarte-dto/dist/
+COPY --from=builder --chown=nestjs:nodejs /app/packages/clarte-dto/dist ./packages/clarte-dto/dist/
 
 COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/dist/ ./apps/clarte-api/dist/
+COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr*.json ./app/clarte-api/
 
-
-CMD ["node", "apps/clarte-api/main.js"]
+CMD ["node", "apps/clarte-api/dist/main.js"]
