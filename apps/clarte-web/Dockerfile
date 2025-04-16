@@ -59,9 +59,9 @@ ENV PORT=3000
 # enabling standalong mode, it got its file structure handled, so just to root folder.
 COPY --from=builder --chown=nextjs:nodejs /app/apps/clarte-web/.next/standalone ./
 # Copy static
-COPY --from=builder --chown=nextjs:nodejs /app/apps/clarte-web/.next/static ./apps/clarte-web/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/clarte-web/.next/static ./apps/clarte-web/.next/static/
 # Copy the public
-COPY --from=builder --chown=nextjs:nodejs /app/apps/clarte-web/public ./apps/clarte-web/public
+COPY --from=builder --chown=nextjs:nodejs /app/apps/clarte-web/public ./apps/clarte-web/public/
 
 
 
