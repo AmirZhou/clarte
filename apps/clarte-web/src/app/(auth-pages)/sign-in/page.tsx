@@ -1,10 +1,10 @@
-import { FormMessage, Message } from '@/components/forms/form-message';
-import { SubmitButton } from '@/components/forms/SubmitButton';
+import { FormMessage, Message } from '@/components/Forms/form-message';
+import { SubmitButton } from '@/components/Forms/SubmitButton';
 import {
   signinWithGithubAction,
   signinWithGoogleAction,
 } from '@/utils/actions';
-import { Label } from '@/components/forms/Label';
+import { Label } from '@/components/Forms/Label';
 import { Input } from '@/components/shared/input';
 import Link from 'next/link';
 import { signInAction } from '@/utils/actions';
