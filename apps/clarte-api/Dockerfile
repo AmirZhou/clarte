@@ -15,11 +15,6 @@ COPY packages/clarte-dto/package.json ./packages/clarte-dto/
 COPY apps/clarte-api/package.json ./apps/clarte-api/
 
 
-RUN echo "--- Builder: Before install ---" && \
-    echo "Listing /app contents:" && \
-    ls -la .
-
-
 RUN pnpm install
 # === DEBUG 1: Check right after install ===
 RUN echo "--- Builder: After install ---" && \
@@ -55,11 +50,12 @@ ENV NODE_ENV=production
 ## since in nestjs, there's no transpile package configuration like Nextjs, I gotta copy the dto build artifact
 
 COPY --from=builder --chown=nestjs:nodejs /app/node_modules ./node_modules/
+COPY --from=builder --chown=nestjs:nodejs /app/apps/charte-api/node_modules ./apps/clarte-api/node_modules/
 
 COPY --from=builder --chown=nestjs:nodejs /app/packages/clarte-dto/dist ./packages/clarte-dto/dist/
 
 COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/dist/ ./apps/clarte-api/dist/
-COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr*.json ./app/clarte-api/
+COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr*.json ./apps/clarte-api/
 
 COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr_FR.json ./
 COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr_FR_tiny.json ./
