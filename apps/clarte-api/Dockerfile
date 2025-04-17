@@ -27,12 +27,10 @@ RUN echo "--- Builder: After install ---" && \
     ls -la . && \
     echo "--- Checking specifically for /app/node_modules existence: ---" && \
     ls -lad node_modules || echo "!!! /app/node_modules directory NOT FOUND !!!" && \
-    echo "--- Listing /app/node_modules/.bin (if dir exists): ---" && \
-    ls -la node_modules/.bin || echo "/app/node_modules/.bin NOT FOUND" && \
     echo "--- Checking for typeorm bin (if dir exists): ---" && \
     ls -la node_modules/.bin/typeorm || echo "/app/node_modules/.bin/typeorm NOT FOUND" && \
     echo "--- Listing apps/clarte-api/node_modules (if exists) ---" && \
-    ls -la apps/clarte-api/node_modules || echo "apps/clarte-api/node_modules NOT FOUND"
+    ls -la apps/clarte-api/node_modules/ || echo "apps/clarte-api/node_modules NOT FOUND"
 
 ## Bundle up app source
 COPY . ./
@@ -66,5 +64,14 @@ COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr*.json ./app/cl
 COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr_FR.json ./
 COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr_FR_tiny.json ./
 
-RUN echo "--- Runner: After node_modules copy ---" && ls -la node_modules/typeorm || echo "Runner: TypeORM NOT FOUND after copy"
+
+RUN echo "--- Builder: node_modules copy ---" && \
+    echo "Listing /app contents again:" && \
+    ls -la . && \
+    echo "--- Checking specifically for /app/node_modules existence: ---" && \
+    ls -lad node_modules || echo "!!! /app/node_modules directory NOT FOUND !!!" && \
+    echo "--- Checking for typeorm bin (if dir exists): ---" && \
+    ls -la node_modules/.bin/typeorm || echo "/app/node_modules/.bin/typeorm NOT FOUND" && \
+    echo "--- Listing apps/clarte-api/node_modules (if exists) ---" && \
+    ls -la apps/clarte-api/node_modules/ || echo "apps/clarte-api/node_modules NOT FOUND"
 CMD ["node", "apps/clarte-api/dist/main.js"]
