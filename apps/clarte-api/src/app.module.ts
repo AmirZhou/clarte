@@ -15,6 +15,7 @@ import { SeedingModule } from './modules/seeding/seeding.module';
     // Make sure ConfigModule is imported BEFORE TypeOrmModule if TypeOrmModule relies on env vars
     ConfigModule.forRoot({
       isGlobal: true, // Makes .env variables available throughout the application
+      envFilePath: ['.env.dev.local', '.env'],
     }),
     // Once this (this forRoot) is done, the TypeORM DataSource and EntityManager objects will be available to inject across the entire project (without needing to import any modules), Ref: https://docs.nestjs.com/techniques/database
     TypeOrmModule.forRoot({
