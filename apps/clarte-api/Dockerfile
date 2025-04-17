@@ -15,6 +15,8 @@ COPY packages/clarte-dto/package.json ./packages/clarte-dto/
 COPY apps/clarte-api/package.json ./apps/clarte-api/
 
 RUN pnpm install -r --frozen-lockfile --prod=false
+# === DEBUG 1: Check right after install ===
+RUN echo "--- Builder: After install ---" && ls -la node_modules/typeorm || echo "Builder: TypeORM NOT FOUND after install"
 
 ## Bundle up app source
 COPY . ./
@@ -49,4 +51,5 @@ COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr*.json ./app/cl
 COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr_FR.json ./
 COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr_FR_tiny.json ./
 
+RUN echo "--- Runner: After node_modules copy ---" && ls -la node_modules/typeorm || echo "Runner: TypeORM NOT FOUND after copy"
 CMD ["node", "apps/clarte-api/dist/main.js"]
