@@ -48,17 +48,6 @@ jobs:
             type=sha 
             type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: Debug - List files before build
-        run: |
-          echo "Current directory:"
-          pwd
-          echo "--- Listing root directory (repository root):"
-          ls -la .
-          echo "--- Listing ./apps/ directory:"
-          ls -la ./apps/
-          echo "--- Listing ./apps/clarte-api/ directory:"
-          ls -la ./apps/clarte-api/
-
       - name: Build the API Docker image and LOAD it locally
         id: build
         uses: docker/build-push-action@v6
@@ -74,6 +63,15 @@ jobs:
       - name: Run smoke test with temporary database
 
         run: |
+          echo "Current directory:"
+          pwd
+          echo "--- Listing root directory (repository root):"
+          ls -la .
+          echo "--- Listing ./apps/ directory:"
+          ls -la ./apps/
+          echo "--- Listing ./apps/clarte-api/ directory:"
+          ls -la ./apps/clarte-api/
+
           TEST_NETWORK_NAME="clarte-test-net"
           TEST_DB_CONTAINER_NAME="clarte"
           TEST_API_CONTAINER_NAME="test-api"
