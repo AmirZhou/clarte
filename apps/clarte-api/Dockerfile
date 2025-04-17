@@ -1,6 +1,6 @@
 # Stage 1: Base setup and dependency installation
 FROM node:18-alpine AS base
-RUN corepack enable pnpm && corepack install -g pnpm@latest-10
+RUN corepack enable pnpm && corepack install -g pnpm@10.8.1
 RUN apk add --no-cache libc6-compat
 
 
@@ -14,7 +14,18 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/clarte-dto/package.json ./packages/clarte-dto/
 COPY apps/clarte-api/package.json ./apps/clarte-api/
 
-RUN pnpm install -r --frozen-lockfile --prod=false
+
+RUN pnpm install
+# === DEBUG 1: Check right after install ===
+RUN echo "--- Builder: After install ---" && \
+    echo "Listing /app contents again:" && \
+    ls -la . && \
+    echo "--- Checking specifically for /app/node_modules existence: ---" && \
+    ls -lad node_modules || echo "!!! /app/node_modules directory NOT FOUND !!!" && \
+    echo "--- Checking for typeorm bin (if dir exists): ---" && \
+    ls -la node_modules/.bin/typeorm || echo "/app/node_modules/.bin/typeorm NOT FOUND" && \
+    echo "--- Listing apps/clarte-api/node_modules (if exists) ---" && \
+    ls -la apps/clarte-api/node_modules/ || echo "apps/clarte-api/node_modules NOT FOUND"
 
 ## Bundle up app source
 COPY . ./
@@ -37,12 +48,26 @@ ENV NODE_ENV=production
 
 
 ## since in nestjs, there's no transpile package configuration like Nextjs, I gotta copy the dto build artifact
+
+COPY --from=builder --chown=nestjs:nodejs /app/node_modules ./node_modules/
+COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/node_modules ./apps/clarte-api/node_modules/
+
 COPY --from=builder --chown=nestjs:nodejs /app/packages/clarte-dto/dist ./packages/clarte-dto/dist/
 
 COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/dist/ ./apps/clarte-api/dist/
-COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr*.json ./app/clarte-api/
+COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr*.json ./apps/clarte-api/
 
 COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr_FR.json ./
 COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr_FR_tiny.json ./
 
+
+RUN echo "--- Builder: node_modules copy ---" && \
+    echo "Listing /app contents again:" && \
+    ls -la . && \
+    echo "--- Checking specifically for /app/node_modules existence: ---" && \
+    ls -lad node_modules || echo "!!! /app/node_modules directory NOT FOUND !!!" && \
+    echo "--- Checking for typeorm bin (if dir exists): ---" && \
+    ls -la node_modules/.bin/typeorm || echo "/app/node_modules/.bin/typeorm NOT FOUND" && \
+    echo "--- Listing apps/clarte-api/node_modules (if exists) ---" && \
+    ls -la apps/clarte-api/node_modules/ || echo "apps/clarte-api/node_modules NOT FOUND"
 CMD ["node", "apps/clarte-api/dist/main.js"]
