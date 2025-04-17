@@ -22,7 +22,7 @@ COPY . ./
 ## Build the shared package first, then the nestjs app
 RUN pnpm --filter=@clarte/dto... build
 RUN pnpm --filter=clarte-api... build
-RUN pnpm prune --prod --recursive
+RUN pnpm prune --prod 
 
 # Stage 3: Copy the artifacts, into the final runner
 FROM node:18-alpine AS runner
