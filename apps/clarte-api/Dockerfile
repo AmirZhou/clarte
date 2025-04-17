@@ -1,6 +1,6 @@
 # Stage 1: Base setup and dependency installation
 FROM node:18-alpine AS base
-RUN corepack enable pnpm && corepack install -g pnpm@9
+RUN corepack enable pnpm && corepack install -g pnpm@10.8.1
 RUN apk add --no-cache libc6-compat
 
 
