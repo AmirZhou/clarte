@@ -12,7 +12,9 @@ WORKDIR /app
 ## copy manifests and install dependencies
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/clarte-dto/package.json ./packages/clarte-dto/
-RUN pnpm install -r --frozen-lockfile
+COPY apps/clarte-api/package.json ./apps/clarte-api/
+
+RUN pnpm install -r --frozen-lockfile --prod=false
 
 ## Bundle up app source
 COPY . ./
@@ -39,5 +41,8 @@ COPY --from=builder --chown=nestjs:nodejs /app/packages/clarte-dto/dist ./packag
 
 COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/dist/ ./apps/clarte-api/dist/
 COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr*.json ./app/clarte-api/
+
+COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr_FR.json ./
+COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr_FR_tiny.json ./
 
 CMD ["node", "apps/clarte-api/dist/main.js"]
