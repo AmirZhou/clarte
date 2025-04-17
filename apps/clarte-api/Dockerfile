@@ -22,7 +22,7 @@ COPY . ./
 ## Build the shared package first, then the nestjs app
 RUN pnpm --filter=@clarte/dto... build
 RUN pnpm --filter=clarte-api... build
-
+RUN pnpm prune --prod --recursive
 
 # Stage 3: Copy the artifacts, into the final runner
 FROM node:18-alpine AS runner
@@ -37,6 +37,10 @@ ENV NODE_ENV=production
 
 
 ## since in nestjs, there's no transpile package configuration like Nextjs, I gotta copy the dto build artifact
+
+COPY --from=builder --chown=nestjs:nodejs /app/node_modules ./node_modules
+
+
 COPY --from=builder --chown=nestjs:nodejs /app/packages/clarte-dto/dist ./packages/clarte-dto/dist/
 
 COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/dist/ ./apps/clarte-api/dist/

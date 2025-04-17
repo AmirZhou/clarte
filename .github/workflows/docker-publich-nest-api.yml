@@ -103,7 +103,6 @@ jobs:
           echo "Attempting to use image tag: >>>${TEST_IMAGE_TAG}<<<"
           docker run --rm \
             --network ${TEST_NETWORK_NAME} \
-            --workdir /app/apps/clarte-api \
             -e DB_HOST=${TEST_DB_CONTAINER_NAME} \
             -e DB_PORT=5432 \
             -e DB_USERNAME=${TEST_DB_USER} \
