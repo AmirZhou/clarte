@@ -14,9 +14,25 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/clarte-dto/package.json ./packages/clarte-dto/
 COPY apps/clarte-api/package.json ./apps/clarte-api/
 
-RUN pnpm install -r --frozen-lockfile --prod=false
+
+RUN echo "--- Builder: Before install ---" && \
+    echo "Listing /app contents:" && \
+    ls -la .
+
+
+RUN pnpm install
 # === DEBUG 1: Check right after install ===
-RUN echo "--- Builder: After install ---" && ls -la node_modules/typeorm || echo "Builder: TypeORM NOT FOUND after install"
+RUN echo "--- Builder: After install ---" && \
+    echo "Listing /app contents again:" && \
+    ls -la . && \
+    echo "--- Checking specifically for /app/node_modules existence: ---" && \
+    ls -lad node_modules || echo "!!! /app/node_modules directory NOT FOUND !!!" && \
+    echo "--- Listing /app/node_modules/.bin (if dir exists): ---" && \
+    ls -la node_modules/.bin || echo "/app/node_modules/.bin NOT FOUND" && \
+    echo "--- Checking for typeorm bin (if dir exists): ---" && \
+    ls -la node_modules/.bin/typeorm || echo "/app/node_modules/.bin/typeorm NOT FOUND" && \
+    echo "--- Listing apps/clarte-api/node_modules (if exists) ---" && \
+    ls -la apps/clarte-api/node_modules || echo "apps/clarte-api/node_modules NOT FOUND"
 
 ## Bundle up app source
 COPY . ./
@@ -41,7 +57,6 @@ ENV NODE_ENV=production
 ## since in nestjs, there's no transpile package configuration like Nextjs, I gotta copy the dto build artifact
 
 COPY --from=builder --chown=nestjs:nodejs /app/node_modules ./node_modules/
-
 
 COPY --from=builder --chown=nestjs:nodejs /app/packages/clarte-dto/dist ./packages/clarte-dto/dist/
 
