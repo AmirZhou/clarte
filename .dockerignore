@@ -2,9 +2,8 @@
 .git
 
 #   Usually built inside the container
-node_modules 
+apps/clarte-web/node_modules 
 #   Ignore all node_modules directories anywhere in the project
-**/node_modules
 npm-debug.log
 *.log
 .env*
