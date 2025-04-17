@@ -98,11 +98,9 @@ jobs:
           sleep 15
 
           echo "Running database migrations..."
-          echo "--- Checking /app/node_modules/typeorm/cli.js ---";
-
-          ls -la /app/node_modules/typeorm/cli.js || echo "Not found in /app/node_modules";
           echo "--- Checking /app/apps/clarte-api/node_modules/typeorm/cli.js ---";
-          ls -la /app/apps/clarte-api/node_modules/typeorm/cli.js || echo "Not found in /app/apps/clarte-api/node_modules"; 
+          ls -la /app/apps/clarte-api/node_modules/typeorm/cli.js || echo "Not found in /app/apps/clarte-api/node_modules/typeorm";
+
 
           echo "Attempting to use image tag: >>>${TEST_IMAGE_TAG}<<<"
           docker run --rm \
@@ -113,7 +111,7 @@ jobs:
             -e DB_PASSWORD=${TEST_DB_PASSWORD} \
             -e DB_DATABASE=${TEST_DB_NAME} \
             "${TEST_IMAGE_TAG}" \
-            node ./app/node_modules/typeorm/cli.js migration:run -d dist/datasources/postgresLocalDatasource.js
+            node ./app/apps/clarte-api/node_modules/typeorm/cli.js migration:run -d dist/datasources/postgresLocalDatasource.js
 
           echo "Starting API container (${TEST_API_CONTAINER_NAME}) on image ${TEST_IMAGE_TAG}..."
           docker run -d \
