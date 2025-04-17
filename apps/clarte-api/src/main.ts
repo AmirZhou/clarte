@@ -19,6 +19,6 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,POST',
     credentials: true, // Allow cookies to be sent (if using authentication)
   });
-  await app.listen(process.env.PORT ?? 23010);
+  await app.listen(process.env.LISTENING_PORT ?? 23010);
 }
 bootstrap();
