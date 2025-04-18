@@ -1,6 +1,6 @@
 # Stage 1: Base setup and dependency installation
 FROM node:18-alpine AS base
-RUN corepack enable pnpm && corepack install -g pnpm@10.8.1
+RUN corepack enable pnpm && corepack install -g pnpm@10.5.2
 RUN apk add --no-cache libc6-compat
 
 
@@ -15,59 +15,36 @@ COPY packages/clarte-dto/package.json ./packages/clarte-dto/
 COPY apps/clarte-api/package.json ./apps/clarte-api/
 
 
-RUN pnpm install
-# === DEBUG 1: Check right after install ===
-RUN echo "--- Builder: After install ---" && \
-    echo "Listing /app contents again:" && \
-    ls -la . && \
-    echo "--- Checking specifically for /app/node_modules existence: ---" && \
-    ls -lad node_modules || echo "!!! /app/node_modules directory NOT FOUND !!!" && \
-    echo "--- Checking for typeorm bin (if dir exists): ---" && \
-    ls -la node_modules/.bin/typeorm || echo "/app/node_modules/.bin/typeorm NOT FOUND" && \
-    echo "--- Listing apps/clarte-api/node_modules (if exists) ---" && \
-    ls -la apps/clarte-api/node_modules/ || echo "apps/clarte-api/node_modules NOT FOUND"
+RUN pnpm install -r --frozen-lockfile --prod=false
 
-## Bundle up app source
 COPY . ./
-
-## Build the shared package first, then the nestjs app
 RUN pnpm --filter=@clarte/dto... build
 RUN pnpm --filter=clarte-api... build
-
+CMD ["node", "apps/clarte-api/dist/main.js"]
 
 # Stage 3: Copy the artifacts, into the final runner
-FROM node:18-alpine AS runner
+# FROM node:18-alpine AS runner
+# RUN corepack enable pnpm && corepack install -g pnpm@10.5.2
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nestjs
-USER nestjs
+# RUN addgroup --system --gid 1001 nodejs
+# RUN adduser --system --uid 1001 nestjs
 
-WORKDIR /app
+# WORKDIR /app
 
-ENV NODE_ENV=production
+# ENV NODE_ENV=production
 
+# COPY --chown=nestjs:nodejs package.json pnpm-lock.yaml pnpm-workspace.yaml* ./
+# COPY --chown=nestjs:nodejs apps/clarte-api/package.json ./apps/clarte-api/
+# COPY --chown=nestjs:nodejs packages/clarte-dto/package.json ./packages/clarte-dto/ 
+# COPY --chown=nestjs:nodejs packages/clarte-dto/dist/ ./
 
-## since in nestjs, there's no transpile package configuration like Nextjs, I gotta copy the dto build artifact
-
-COPY --from=builder --chown=nestjs:nodejs /app/node_modules ./node_modules/
-COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/node_modules ./apps/clarte-api/node_modules/
-
-COPY --from=builder --chown=nestjs:nodejs /app/packages/clarte-dto/dist ./packages/clarte-dto/dist/
-
-COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/dist/ ./apps/clarte-api/dist/
-COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr*.json ./apps/clarte-api/
-
-COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr_FR.json ./
-COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr_FR_tiny.json ./
+# RUN pnpm install --prod --frozen-lockfile 
 
 
-RUN echo "--- Builder: node_modules copy ---" && \
-    echo "Listing /app contents again:" && \
-    ls -la . && \
-    echo "--- Checking specifically for /app/node_modules existence: ---" && \
-    ls -lad node_modules || echo "!!! /app/node_modules directory NOT FOUND !!!" && \
-    echo "--- Checking for typeorm bin (if dir exists): ---" && \
-    ls -la node_modules/.bin/typeorm || echo "/app/node_modules/.bin/typeorm NOT FOUND" && \
-    echo "--- Listing apps/clarte-api/node_modules (if exists) ---" && \
-    ls -la apps/clarte-api/node_modules/ || echo "apps/clarte-api/node_modules NOT FOUND"
-CMD ["node", "apps/clarte-api/dist/main.js"]
+# COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/dist/ ./apps/clarte-api/dist/
+# COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr_FR.json ./apps/clarte-api/
+# COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr_FR_tiny.json ./apps/clarte-api/
+
+# USER nestjs
+
+# CMD ["node", "apps/clarte-api/dist/main.js"]
