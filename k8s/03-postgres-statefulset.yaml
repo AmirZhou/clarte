@@ -1,0 +1,48 @@
+# k8s/postgres-statefulset.yaml
+
+apiVersion: apps/v1
+kind: statefulSet
+metadata:
+  name: postgres # name of the stateful resource
+spec:
+  serviceName: 'postgres-svc' # refer to the pg headless service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres # Pods created must match this label
+  template: # the pod template
+    metadata:
+      labels:
+        app: postgres # apple the label for the service selector
+
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: postgres
+          image: postgres:17.4-bookworm
+          ports:
+            - containerPort: 5432
+              name: postgresdb
+          env:
+            # Define non-sensitive env or the pg setup
+            - name: POSTGRES_DB
+              value: clarte
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+            # Get sensitive values from a K8s Secret
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret # Name of the secret to create
+                  key: POSTGRES_USER # Key within the Secret
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data # standard pg data dic
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-data # Name of the volume claim, matches volumnMounts.name
+      spec:
+        accessModes: ['ReadWriteOnce'] # Can be mounted by one node at a time
+        resources:
+          requests:
+            storage: 5Gi
