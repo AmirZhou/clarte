@@ -1,0 +1,12 @@
+# k8s/postgres-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-svc # for stable dns name
+spec:
+  ports:
+    - port: 5432 # the port the service listens on
+      targetPort: 5432 # the port the pg container listen on
+  selector:
+    app: postgres
+  clusterIP: None # a headless server
