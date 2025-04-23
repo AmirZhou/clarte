@@ -1,7 +1,7 @@
 # k8s/postgres-statefulset.yaml
 
 apiVersion: apps/v1
-kind: statefulSet
+kind: StatefulSet
 metadata:
   name: postgres # name of the stateful resource
 spec:
@@ -35,6 +35,11 @@ spec:
                 secretKeyRef:
                   name: postgres-secret # Name of the secret to create
                   key: POSTGRES_USER # Key within the Secret
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data # standard pg data dic
