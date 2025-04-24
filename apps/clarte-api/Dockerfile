@@ -20,31 +20,29 @@ RUN pnpm install -r --frozen-lockfile --prod=false
 COPY . ./
 RUN pnpm --filter=@clarte/dto... build
 RUN pnpm --filter=clarte-api... build
-CMD ["node", "apps/clarte-api/dist/main.js"]
 
 # Stage 3: Copy the artifacts, into the final runner
-# FROM node:18-alpine AS runner
-# RUN corepack enable pnpm && corepack install -g pnpm@10.5.2
+FROM node:18-alpine AS runner
+RUN corepack enable pnpm && corepack install -g pnpm@10.5.2
 
-# RUN addgroup --system --gid 1001 nodejs
-# RUN adduser --system --uid 1001 nestjs
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nestjs
 
-# WORKDIR /app
+WORKDIR /app
 
-# ENV NODE_ENV=production
+ENV NODE_ENV=production
 
-# COPY --chown=nestjs:nodejs package.json pnpm-lock.yaml pnpm-workspace.yaml* ./
-# COPY --chown=nestjs:nodejs apps/clarte-api/package.json ./apps/clarte-api/
-# COPY --chown=nestjs:nodejs packages/clarte-dto/package.json ./packages/clarte-dto/ 
-# COPY --chown=nestjs:nodejs packages/clarte-dto/dist/ ./
+COPY --chown=nestjs:nodejs package.json pnpm-lock.yaml pnpm-workspace.yaml* ./
+COPY --chown=nestjs:nodejs apps/clarte-api/package.json ./apps/clarte-api/
+COPY --chown=nestjs:nodejs packages/clarte-dto/package.json ./packages/clarte-dto/ 
 
-# RUN pnpm install --prod --frozen-lockfile 
+RUN pnpm install --prod --frozen-lockfile 
 
 
-# COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/dist/ ./apps/clarte-api/dist/
-# COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr_FR.json ./apps/clarte-api/
-# COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr_FR_tiny.json ./apps/clarte-api/
+COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/dist/ ./apps/clarte-api/dist/
+COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr_FR.json ./apps/clarte-api/
+COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr_FR_tiny.json ./apps/clarte-api/
 
-# USER nestjs
+USER nestjs
 
-# CMD ["node", "apps/clarte-api/dist/main.js"]
+CMD ["node", "apps/clarte-api/dist/main.js"]
