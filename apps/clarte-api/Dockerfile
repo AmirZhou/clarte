@@ -40,20 +40,9 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-COPY --chown=nestjs:nodejs package.json pnpm-lock.yaml pnpm-workspace.yaml* ./
-COPY --chown=nestjs:nodejs apps/clarte-api/package.json ./apps/clarte-api/
-COPY --chown=nestjs:nodejs packages/clarte-dto/package.json ./packages/clarte-dto/ 
-
-RUN pnpm install --prod --frozen-lockfile 
-
-
-WORKDIR /app
-
-COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/dist/ ./apps/clarte-api/dist/
-COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr_FR.json ./apps/clarte-api/
-COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr_FR_tiny.json ./apps/clarte-api/
+COPY --from=builder --chown=nestjs:nodejs /app/deploy/api ./
 
 USER nestjs
 
-CMD ["node", "apps/clarte-api/dist/main.js"]
+CMD ["node", "dist/main.js"]
 
