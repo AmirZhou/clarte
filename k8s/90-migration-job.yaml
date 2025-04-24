@@ -13,12 +13,12 @@ spec:
           restartPolicy: Never # Don't restart the job pod if it fails/succeeds
           image: ghcr.io/amirzhou/clarte-api:latest
           # Override the default CMD to run the JS migration script
-          command: ['node', './node_modules/.bin/typeorm']
+          command: ['node', './apps/clarte-api/node_modules/.bin/typeorm']
           args:
             [
               'migration:run',
               '-d',
-              './dist/datasources/postgresLocalDatasource.js',
+              './apps/clarte-api/dist/datasources/postgresLocalDatasource.js',
             ]
           workingDir: /app # Ensure command runs from the correct directory
           env:

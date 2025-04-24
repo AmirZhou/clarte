@@ -22,19 +22,9 @@ COPY . ./
 RUN pnpm --filter=@clarte/dto... build
 RUN pnpm --filter=clarte-api... build
 
-# Debug: Verify files and pnpm version
-RUN pnpm --version
-RUN cat /app/pnpm-workspace.yaml
-RUN pnpm config get inject-workspace-packages
-RUN find /app -name ".npmrc" || echo "No .npmrc files found"
-RUN pnpm list --filter '*'
-
-# Use pnpm deploy to create the final package in /app/deploy/api
-# --prod ensures only production dependencies are included
-RUN pnpm --filter=clarte-api deploy --prod ./deploy/api
-
 # Stage 3: Copy the artifacts, into the final runner
 FROM node:18-alpine AS runner
+RUN corepack enable pnpm && corepack install -g pnpm@10.5.2
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nestjs
@@ -42,8 +32,21 @@ RUN adduser --system --uid 1001 nestjs
 WORKDIR /app
 
 ENV NODE_ENV=production
-COPY --from=builder --chown=nestjs:nodejs /app/deploy/api ./
+
+COPY --chown=nestjs:nodejs package.json pnpm-lock.yaml pnpm-workspace.yaml* ./
+COPY --chown=nestjs:nodejs apps/clarte-api/package.json ./apps/clarte-api/
+COPY --chown=nestjs:nodejs packages/clarte-dto/package.json ./packages/clarte-dto/ 
+
+RUN pnpm install --prod --frozen-lockfile 
+
+
+WORKDIR /app
+
+COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/dist/ ./apps/clarte-api/dist/
+COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr_FR.json ./apps/clarte-api/
+COPY --from=builder --chown=nestjs:nodejs /app/apps/clarte-api/fr_FR_tiny.json ./apps/clarte-api/
 
 USER nestjs
 
-CMD ["node", "dist/main.js"]
+CMD ["node", "apps/clarte-api/dist/main.js"]
+
