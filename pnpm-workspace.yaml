@@ -3,5 +3,3 @@ packages:
   - 'apps/*'
   # all packages in direct subdirs of packages/
   - 'packages/*'
-
-injectWorkspacePackages: true
