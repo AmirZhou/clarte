@@ -13,7 +13,7 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/clarte-dto/package.json ./packages/clarte-dto/
 COPY apps/clarte-api/package.json ./apps/clarte-api/
 
-RUN pnpm install -r --frozen-lockfile --prod=false
+RUN pnpm install -r --prod=false
 
 # copy src codes
 COPY . ./
@@ -21,6 +21,13 @@ COPY . ./
 # Build shared package and API
 RUN pnpm --filter=@clarte/dto... build
 RUN pnpm --filter=clarte-api... build
+
+# Debug: Verify files and pnpm version
+RUN pnpm --version
+RUN cat /app/pnpm-workspace.yaml
+RUN pnpm config get inject-workspace-packages
+RUN find /app -name ".npmrc" || echo "No .npmrc files found"
+RUN pnpm list --filter '*'
 
 # Use pnpm deploy to create the final package in /app/deploy/api
 # --prod ensures only production dependencies are included
