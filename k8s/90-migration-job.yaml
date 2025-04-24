@@ -1,0 +1,41 @@
+# k8s/migration-job
+apiVersion: batch/v1
+kind: Job
+metadata:
+  # Generate a unique name each time or manage deletion
+  generateName: clarte-api-migration-
+spec:
+  backoffLimit: 1 # Number of retries before marking job as failed
+  template:
+    spec:
+      containers:
+        - name: migrator
+          restartPolicy: Never # Don't restart the job pod if it fails/succeeds
+          image: ghcr.io/amirzhou/clarte-api:latest
+          # Override the default CMD to run the JS migration script
+          command: ['node', './node_modules/.bin/typeorm']
+          args:
+            [
+              'migration:run',
+              '-d',
+              './dist/datasources/postgresLocalDatasource.js',
+            ]
+          workingDir: /app # Ensure command runs from the correct directory
+          env:
+            # Inject same DB connection details as the API Deployment
+            - name: DB_HOST
+              value: 'postgres-svc'
+            - name: DB_PORT
+              value: '5432'
+            - name: DB_DATABASE
+              value: 'clarte'
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD

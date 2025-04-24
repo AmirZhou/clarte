@@ -14,6 +14,11 @@
     "typeorm": "typeorm-ts-node-commonjs -d ./src/datasources/postgresLocalDatasource.ts",
     "db:migrate": "typeorm migration:run -d dist/datasources/postgresLocalDatasource.js"
   },
+  "files": [
+    "dist",
+    "fr_FR.json",
+    "fr_FR_tiny.json"
+  ],
   "dependencies": {
     "@clarte/dto": "workspace:*",
     "@nestjs/common": "^11.0.1",
