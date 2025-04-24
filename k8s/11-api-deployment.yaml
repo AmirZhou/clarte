@@ -17,6 +17,7 @@ spec:
       containers:
         - name: api
           image: ghcr.io/amirzhou/clarte-api:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 9999
           env:
