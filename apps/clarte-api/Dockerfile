@@ -22,6 +22,13 @@ COPY . ./
 RUN pnpm --filter=@clarte/dto... build
 RUN pnpm --filter=clarte-api... build
 
+
+
+# Use pnpm deploy to create the final package in /app/deploy/api
+# --prod ensures only production dependencies are included
+RUN pnpm --filter=clarte-api deploy --legacy --prod ./deploy/api
+
+
 # Stage 3: Copy the artifacts, into the final runner
 FROM node:18-alpine AS runner
 RUN corepack enable pnpm && corepack install -g pnpm@10.5.2
