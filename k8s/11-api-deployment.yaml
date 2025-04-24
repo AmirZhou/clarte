@@ -1,0 +1,50 @@
+# k8s/api-deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clarte-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clarte-api
+  template:
+    metadata:
+      labels:
+        app: clarte-api
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/amirzhou/clarte-api:latest
+          ports:
+            - containerPort: 9999
+          env:
+            # Database Connection #
+            - name: DB_HOST
+              value: 'postgres-svc'
+            - name: DB_PORT
+              value: '5432'
+            - name: DB_DATABASE
+              value: 'clarte'
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+            # APP Conifg
+            - name: LISTENING_PORT
+              value: '9999'
+            - name: NODE_ENV
+              value: 'production'
+            - name: SEED_DATABASE
+              value: 'false'
+            - name: FORCE_SEED
+              value: 'false'
+            - name: NEXT_PUBLIC_SITE_URL
+              value: 'http://localhost:3000' # Adjuse for deploy
