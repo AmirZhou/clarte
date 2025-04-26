@@ -1,0 +1,33 @@
+# k8s/web-deployment.yaml (Example Snippet)
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clarte-web # Or your webapp deployment name
+spec:
+  # ... replicas, selector ...
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clarte-web # Selector to find pods managed by this deployment
+  template:
+    metadata:
+      labels:
+        app: clarte-web
+    spec:
+      containers:
+        - name: web
+          image: ghcr.io/amirzhou/clarte-web:latest
+          # Essential when using :latest tag to ensure updates are pulled
+          imagePullPolicy: Always
+          ports:
+            # Port the Next.js standalone server listens on (from its ENV PORT=3000)
+            - containerPort: 3000
+          env:
+            # --- Provide the API URL for the RUNNING container ---
+            - name: NESTJS_API_URL
+              value: 'http://clarte-api-svc:80'
+            - name: NODE_ENV
+              value: 'production'
+            - name: PORT
+              value: '3000'

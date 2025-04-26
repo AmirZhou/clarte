@@ -1,0 +1,13 @@
+# k8s/web-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: clarte-web-svc # Stable DNS name for the web service
+spec:
+  selector:
+    app: clarte-web # Selects pods with the label "app=clarte-web"
+  ports:
+    - protocol: TCP
+      port: 80 # Port the service will listen on (common for web traffic)
+      targetPort: 3000 # Port the Next.js container listens on (containerPort)
+  type: ClusterIP # Only reachable inside the cluster
