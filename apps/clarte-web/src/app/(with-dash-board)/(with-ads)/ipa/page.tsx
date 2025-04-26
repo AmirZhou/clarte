@@ -4,9 +4,7 @@ import { IPASymbolIcon } from '@/components/icons';
 import IpaInteractionWrapper from './components/IpaInteractionWrapper';
 
 async function getIpaData(): Promise<IpaWithExamplesDto[]> {
-  const internalApiUrl = process.env.NEXT_PUBLIC_SITE_URL
-    ? `https://${process.env.NEXT_PUBLIC_SITE_URLL}/api/proxy/ipa-symbols/all` // Use Route Handler
-    : 'http://localhost:3000/api/proxy/ipa-symbols/all'; // Fallback for local dev
+  const internalApiUrl = `http://127.0.0.1:${process.env.PORT}/api/proxy/ipa-symbols/all`; // Use Route Handler
 
   try {
     console.log(`[Page Server] Fetching from: ${internalApiUrl}`);

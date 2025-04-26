@@ -19,6 +19,7 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const limit = searchParams.get('limit');
     const targetUrl = new URL(`/ipa-symbols/all`, NESTJS_API_BASE_URL);
+    console.log('targetUrl:' + targetUrl);
     if (limit !== null) {
       targetUrl.searchParams.append('limit', limit);
     }
