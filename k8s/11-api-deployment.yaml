@@ -17,6 +17,7 @@ spec:
       containers:
         - name: api
           image: ghcr.io/amirzhou/clarte-api:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 9999
           env:
@@ -43,7 +44,7 @@ spec:
             - name: NODE_ENV
               value: 'production'
             - name: SEED_DATABASE
-              value: 'false'
+              value: 'true'
             - name: FORCE_SEED
               value: 'false'
             - name: NEXT_PUBLIC_SITE_URL
