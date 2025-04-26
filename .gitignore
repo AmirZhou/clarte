@@ -138,3 +138,6 @@ dist
 deploy
 */**/deploy
 **/*/deploy
+
+postgres-secret.yaml
+web-secret.yaml
