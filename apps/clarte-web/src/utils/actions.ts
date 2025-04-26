@@ -9,7 +9,10 @@ import { headers } from 'next/headers';
 const signInWith = (provider: Provider) => async () => {
   const supabase = await createClientForServer();
 
-  const auth_callback_url = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`;
+  const auth_callback_url =
+    process.env.NODE_ENV === 'production'
+      ? `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`
+      : `http://127.0.0.1:${process.env.PORT}/auth/callback`;
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
