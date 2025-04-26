@@ -44,7 +44,7 @@ spec:
             - name: NODE_ENV
               value: 'production'
             - name: SEED_DATABASE
-              value: 'false'
+              value: 'true'
             - name: FORCE_SEED
               value: 'false'
             - name: NEXT_PUBLIC_SITE_URL

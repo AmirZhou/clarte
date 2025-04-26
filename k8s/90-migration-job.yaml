@@ -3,24 +3,24 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   # Generate a unique name each time or manage deletion
-  generateName: clarte-api-migration-
+  name: clarte-api-migration
 spec:
   backoffLimit: 1 # Number of retries before marking job as failed
   template:
     spec:
+      restartPolicy: Never # Don't restart the job pod if it fails/succeeds
       containers:
         - name: migrator
-          restartPolicy: Never # Don't restart the job pod if it fails/succeeds
           image: ghcr.io/amirzhou/clarte-api:latest
           # Override the default CMD to run the JS migration script
-          command: ['node', './apps/clarte-api/node_modules/.bin/typeorm']
+          workingDir: /app # Ensure command runs from the correct directory
+          command: ['./node_modules/.bin/typeorm']
           args:
             [
               'migration:run',
               '-d',
-              './apps/clarte-api/dist/datasources/postgresLocalDatasource.js',
+              './dist/datasources/postgresLocalDatasource.js',
             ]
-          workingDir: /app # Ensure command runs from the correct directory
           env:
             # Inject same DB connection details as the API Deployment
             - name: DB_HOST
