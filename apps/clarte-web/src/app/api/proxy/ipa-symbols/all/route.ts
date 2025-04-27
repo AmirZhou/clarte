@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { IpaWithExamplesDto } from '@clarte/dto';
 
+// app/api/proxy/ipa-symbols.'all
 const NESTJS_API_BASE_URL = process.env.NESTJS_API_URL;
 if (!NESTJS_API_BASE_URL) {
   console.error(

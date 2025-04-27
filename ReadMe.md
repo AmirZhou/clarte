@@ -95,6 +95,8 @@ This is great for testing and development.
 
     # Apply the Migration Job
     kubectl apply -f k8s/migration-job.yaml
+    # Check the Migration Job
+    kubectl logs Job/clarte-api-migration
 
     # Apply API components
     kubectl apply -f k8s/api-service.yaml
@@ -102,8 +104,9 @@ This is great for testing and development.
 
     # Wait for API and Web pods to attempt starting
     echo "Waiting for API and Web deployments..."
-    sleep 900 # It may take around 10 minuts to populate the database.
-
+    # It may take around 10 minuts to populate the database.
+    kubectl logs deploy/clarte-api # Run this command, make sure the progress hits 100%
+    
     # Apply Web components
     kubectl apply -f k8s/web-service.yaml
     kubectl apply -f k8s/web-deployment.yaml
