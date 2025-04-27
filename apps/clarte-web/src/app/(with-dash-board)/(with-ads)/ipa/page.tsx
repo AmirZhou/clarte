@@ -14,8 +14,9 @@ async function getIpaData(): Promise<IpaWithExamplesDto[]> {
     // In a real app, you might want to throw an error here
     return [];
   }
-  const targetUrl = new URL(`/ipa-symbols/all`, backendApiBaseUrl);
-
+  const targetUrl = new URL(`${backendApiBaseUrl}/ipa-symbols/all`);
+  console.log(`Base Url: ${backendApiBaseUrl}`);
+  console.log(`TargetUrl: ${targetUrl}`);
   const limit = '30'; // Replace with dynamic value if necessary
   if (limit) {
     targetUrl.searchParams.append('limit', limit);
