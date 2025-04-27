@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { IpaWithExamplesDto } from '@clarte/dto';
 import IpaInteractionWrapper from './components/IpaInteractionWrapper';
 
