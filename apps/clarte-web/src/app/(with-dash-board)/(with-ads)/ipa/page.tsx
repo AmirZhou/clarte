@@ -14,8 +14,9 @@ async function getIpaData(): Promise<IpaWithExamplesDto[]> {
     // In a real app, you might want to throw an error here
     return [];
   }
-  const targetUrl = new URL(`/ipa-symbols/all`, backendApiBaseUrl);
-
+  const targetUrl = new URL(`${backendApiBaseUrl}/ipa-symbols/all`);
+  console.log(`Base Url: ${backendApiBaseUrl}`);
+  console.log(`TargetUrl: ${targetUrl}`);
   const limit = '30'; // Replace with dynamic value if necessary
   if (limit) {
     targetUrl.searchParams.append('limit', limit);
@@ -78,6 +79,12 @@ async function getIpaData(): Promise<IpaWithExamplesDto[]> {
 
 export default async function Page() {
   const allSymbolsWithExamples = await getIpaData();
+  // make two seperate calls.
+  // the first one, only fetches the symbols and the description if exist, without realtion loaded, 
+  // which renders the icons. that will be fast because there's only several dozen of them.
+
+  // on click. fetches examples based on the user choice of symbol. this way avoid fetching the entire thing.
+  // this will take only 100ms locally. as compare to 5 seconds if I fetch the entire list of symbols with their relation
 
   return (
     <>
