@@ -22,6 +22,9 @@ COPY . ./
 RUN pnpm --filter=@clarte/dto... build
 RUN pnpm --filter=clarte-api... build
 
+RUN echo "--- Builder: After API build ---" && \
+    ls -la /app/apps/clarte-api/dist/main.js || echo "!!! Builder: /app/apps/clarte-api/dist/main.js NOT FOUND after build !!!"
+
 
 
 # Use pnpm deploy to create the final package in /app/deploy/api
