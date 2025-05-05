@@ -28,6 +28,19 @@ RUN pnpm --filter=clarte-api... build
 # --prod ensures only production dependencies are included
 RUN pnpm --filter=clarte-api deploy --legacy --prod ./deploy/api
 
+# add some debug
+RUN echo "--- Builder: DEBUGGING after pnpm deploy ---" && \
+    echo "--- Checking existence of deploy target dir: /app/deploy/api ---" && \
+    ls -lad /app/deploy/api || echo "!!! /app/deploy/api NOT FOUND !!!" && \
+    echo "--- Listing contents of /app/deploy/api ---" && \
+    ls -la /app/deploy/api || echo "!!! Cannot list /app/deploy/api contents !!!" && \
+    echo "--- Checking existence of /app/deploy/api/dist ---" && \
+    ls -lad /app/deploy/api/dist || echo "!!! /app/deploy/api/dist NOT FOUND !!!" && \
+    echo "--- Checking existence of /app/deploy/api/dist/main.js ---" && \
+    ls -la /app/deploy/api/dist/main.js || echo "!!! /app/deploy/api/dist/main.js NOT FOUND !!!" && \
+    echo "--- Checking existence of /app/deploy/api/node_modules ---" && \
+    ls -lad /app/deploy/api/node_modules || echo "!!! /app/deploy/api/node_modules NOT FOUND !!!" && \
+    echo "--- End DEBUGGING after pnpm deploy ---"
 
 # Stage 3: Copy the artifacts, into the final runner
 FROM node:18-alpine AS runner
