@@ -21,9 +21,9 @@ import {
   FindExamplesQueryDto,
   FindAllIpaQueryDto,
   IpaWithExamplesDto,
+  IpaWithoutExamplesDto,
 } from '@clarte/dto';
 import { plainToInstance } from 'class-transformer';
-import { IpaWithoutExamplesDto } from 'ipa-without-examples.dto';
 
 @ApiTags('IPA Symbols')
 @Controller('ipa-symbols')
