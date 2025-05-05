@@ -26,6 +26,11 @@ export class IpaService {
     private dictionaryEntryRepository: Repository<DictionaryEntry>,
   ) {}
 
+  async findSymbolsWithoutExamples(): Promise<IpaSymbol[]> {
+    const symbols = await this.ipaSymbolRepository.find();
+    return symbols;
+  }
+
   async findAll(
     withExamples: boolean = true,
     limit: number = 1,
