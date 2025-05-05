@@ -85,10 +85,10 @@ export class IpaController {
   async getAllSymbols(
     @Query() queryDto: FindAllIpaQueryDto,
   ): Promise<IpaWithExamplesDto[]> {
-    const isLoadExamples = queryDto.withExamples ?? true; // what's the industry common sense of this const naming?
+    const withExamples = queryDto.withExamples ?? true; // what's the industry common sense of this const naming?
     const limit = queryDto.limit ?? 30;
 
-    const symbols = await this.ipaService.findAll(isLoadExamples, limit);
+    const symbols = await this.ipaService.findAll(withExamples, limit);
     // console.log(symbols[0]);
     const dtos = plainToInstance(IpaWithExamplesDto, symbols); // alternative: instance to instance
 

@@ -27,13 +27,13 @@ export class IpaService {
   ) {}
 
   async findAll(
-    includeExamples: boolean = true,
+    withExamples: boolean = true,
     limit: number = 1,
   ): Promise<IpaSymbol[]> {
     // the channalge is the loaded relation wont be random, if load them directly.
     const symbols = await this.ipaSymbolRepository.find(); // this wont load relation by default unless it's set to be eager in Entity
 
-    if (!includeExamples || symbols.length === 0) {
+    if (!withExamples || symbols.length === 0) {
       // Ensure dictionaryEntries is initialized (or handled by consumer) if needed
       symbols.forEach((s) => (s.dictionaryEntries = []));
       console.log('not include Examples');
