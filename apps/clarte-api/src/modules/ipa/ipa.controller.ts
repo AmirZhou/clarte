@@ -23,6 +23,7 @@ import {
   IpaWithExamplesDto,
 } from '@clarte/dto';
 import { plainToInstance } from 'class-transformer';
+import { IpaWithoutExamplesDto } from 'ipa-without-examples.dto';
 
 @ApiTags('IPA Symbols')
 @Controller('ipa-symbols')
@@ -93,6 +94,14 @@ export class IpaController {
     const dtos = plainToInstance(IpaWithExamplesDto, symbols); // alternative: instance to instance
 
     // console.log(dtos[0]);
+    return dtos;
+  }
+
+  @Get('symbols-list')
+  async getSymbolsList(): Promise<IpaWithoutExamplesDto[]> {
+    const symbols = await this.ipaService.findSymbolsWithoutExamples();
+    const dtos = plainToInstance(IpaWithoutExamplesDto, symbols);
+
     return dtos;
   }
 }
