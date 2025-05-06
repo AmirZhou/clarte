@@ -3,7 +3,12 @@ kind: Ingress
 metadata:
   name: clarte-ingress
   annotations:
-    # Apply the strip-api-prefix middleware from the default namespace
+    # Apply the strip-api-prefix middleware ONLY to routes associated with the main backend API
+    # Using Traefik's IngressRoute CRD is the most precise way.
+    # If sticking with standard Ingress, ensure middleware name/config targets correctly.
+    # For now, let's assume the middleware applies based on the service or specific annotations
+    # on the IngressRoute Traefik generates (or remove it if not needed).
+    # If your NestJS API doesn't need '/api' stripped, remove this annotation.
     traefik.ingress.kubernetes.io/router.middlewares: default-strip-api-prefix@kubernetescrd
 spec:
   ingressClassName: traefik
@@ -11,17 +16,29 @@ spec:
     - host: clarte.local # <-- Your chosen test hostname
       http:
         paths:
-          - path: /api
+          - path: /web-api # <-- New path for Next.js API routes
             pathType: Prefix
             backend:
               service:
-                name: clarte-api-svc
+                name: clarte-web-svc # <-- Route to the WEB service
                 port:
-                  number: 80
+                  number: 80 # Port of the clarte-web-s
+
+          # Rule 2: Main NestJS Backend API
+          # This rule have the strip-prefix middleware applied via annotation
+          - path: /api # <-- Path for the NestJS backend
+            pathType: Prefix
+            backend:
+              service:
+                name: clarte-api-svc # <-- Route to the API service
+                port:
+                  number: 80 # Port of the clarte-api-svc
+
+          # Rule 3: Frontend Application (Catch-all) - MUST BE LAST
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: clarte-web-svc
+                name: clarte-web-svc # <-- Route to the WEB service
                 port:
-                  number: 80
+                  number: 80  # Port of the clarte-web-svc
