@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+interface RouteParams {
+  symbol: string;
+}
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { symbol: string } }
+  { params }: { params: RouteParams }
 ) {
   // 1. Read the internal backend API URL from environment variables
   //    set in the k8s web-deployment.yaml
