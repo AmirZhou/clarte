@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-interface RouteParams {
-  symbol: string;
-}
-
 export async function GET(
   request: NextRequest,
-  { params }: { params: RouteParams }
+  context: { params: Promise<{ symbol: string }> }
 ) {
   // 1. Read the internal backend API URL from environment variables
   //    set in the k8s web-deployment.yaml
@@ -23,7 +19,15 @@ export async function GET(
   }
 
   // 2. Extract parameters needed for the backend call
-  const symbol = params.symbol; // Get symbol from the dynamic route segment
+  const params = await context.params;
+  const symbol = params?.symbol; // Access symbol after awaiting
+  if (!symbol) {
+    console.error('[Proxy Route Handler] Symbol parameter is missing.');
+    return NextResponse.json(
+      { message: 'Symbol parameter is required.' },
+      { status: 400 }
+    );
+  }
   const searchParams = request.nextUrl.searchParams;
   const limit = searchParams.get('limit'); // Get limit from query params
 
