@@ -40,7 +40,7 @@ export default function IpaInteractionWrapper({
     try {
       // Construct the URL using the Ingress path /api/...
 
-      const proxyUrl = `/api/proxy/ipa-examples/${encodeURIComponent(symbol.symbol)}?limit=24`;
+      const proxyUrl = `/web-api/proxy/ipa-examples/${encodeURIComponent(symbol.symbol)}?limit=24`;
       console.log(`[Client Fetch] Fetching examples from: ${proxyUrl}`);
       const response = await fetch(proxyUrl); // Fetch via Ingress
       if (!response.ok) {
