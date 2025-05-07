@@ -39,9 +39,8 @@ export function SymbolDetailsCard({
   errorMessage, // also received from the top, display an error rather than a list if something failed.
 }: SymbolDetailsCardProps) {
   return (
-    <div className="w-64 h-96 bg-card text-card-foreground rounded-3xl">
-      {symbolData.symbol}
-      test
+    <div className="w-96 h-[480px] p-12 bg-card text-card-foreground rounded-3xl">
+      <h2 className="text-center text-9xl">{symbolData.symbol}</h2>
     </div>
   );
 }

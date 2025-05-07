@@ -61,8 +61,8 @@ export default function IpaInteractionWrapper({
   };
 
   return (
-    <div className="flex gap-8 border">
-      <div className="flex flex-col gap-4">
+    <div className="flex gap-8 mt-32">
+      <div className="flex flex-col flex-1 gap-4">
         <h2>IPA Symbols</h2>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
           {symbolsData.map((symbol) => (
@@ -84,7 +84,7 @@ export default function IpaInteractionWrapper({
         </div>
       </div>
 
-      <div>
+      <div className="flex-1 flex justify-center">
         {/* Display details for the selected symbol */}
         {selectedSymbol && (
           <SymbolDetailsCard
