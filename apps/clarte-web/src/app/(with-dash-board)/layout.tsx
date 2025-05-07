@@ -8,10 +8,12 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
-    <div className="flex">
-      <NavBar />
-      <Sidebar />
-      {children}
+    /* this contianer, should be flex-row, and it's childer should take all cross-axis space, unless got an explicite height  */
+    <div className="flex-1 flex items-stretch">
+      <div>
+        <Sidebar /> {/* This should have a fix width, with flex-1 height  */}
+      </div>
+      <div className="flex-1">{children}</div>
     </div>
   );
 }

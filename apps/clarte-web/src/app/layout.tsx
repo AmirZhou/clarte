@@ -28,8 +28,13 @@ export default function RootLayout({
 }>) {
   return (
     // This is the recommended way to use the font, but what's the difference
-    <html className={`${poppins.variable} ${doulosSIL.variable}`} lang="en">
-      <body className="font-poppins relative dark">{children}</body>
+    <html
+      className={`min-h-screen ${poppins.variable} ${doulosSIL.variable}`}
+      lang="en"
+    >
+      <body className="dark font-poppins min-h-screen flex flex-col relative ">
+        {children}
+      </body>
     </html>
   );
 }

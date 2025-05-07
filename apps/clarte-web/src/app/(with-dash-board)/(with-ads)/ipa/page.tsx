@@ -49,8 +49,8 @@ export default async function Page() {
   const symbolsList = await getSymbolsList();
 
   return (
-    <>
+    <div className="w-full">
       <IpaInteractionWrapper symbolsData={symbolsList} />
-    </>
+    </div>
   );
 }
