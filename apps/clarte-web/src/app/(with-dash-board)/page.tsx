@@ -1,3 +1,3 @@
 export default async function Home() {
-  return <div>Landing Page</div>;
+  return <div className="text-foreground ">Landing Page</div>;
 }
