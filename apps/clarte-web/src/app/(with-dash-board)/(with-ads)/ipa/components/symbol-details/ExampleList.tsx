@@ -70,6 +70,19 @@ export default function ExampleList({
     setIsTweening(true);
 
     const slides = slidesRef.current;
+    // Safety check for slides and current index
+    if (
+      slides.length === 0 ||
+      currentIndex < 0 ||
+      currentIndex >= slides.length ||
+      !slides[currentIndex]
+    ) {
+      console.warn(
+        'GSAP goToSlide: Invalid current slide or slides array empty.'
+      );
+      setIsTweening(false);
+      return;
+    }
     const currentSlideElement = slides[currentIndex];
     let nextIndex = currentIndex + direction;
 
@@ -79,7 +92,14 @@ export default function ExampleList({
     } else if (nextIndex < 0) {
       nextIndex = examples.length - 1;
     }
+    // Safety check for next slide
+    if (nextIndex < 0 || nextIndex >= slides.length || !slides[nextIndex]) {
+      console.warn('GSAP goToSlide: Invalid next slide index.');
+      setIsTweening(false);
+      return;
+    }
     const nextSlideElement = slides[nextIndex];
+
     // Prepare the next slide (position it off-screen and make it visible)
     // and ensure it's on top for the transition
     gsap.set(nextSlideElement, {
@@ -87,11 +107,13 @@ export default function ExampleList({
       opacity: 1,
       position: 'relative', // Bring to front for animation
       zIndex: 1,
+      willChange: 'transform, opacity', // Hint browser during animation
     });
 
     gsap.set(currentSlideElement, {
       zIndex: 0,
       position: 'absolute', // Keep current slide in flow but allow next to slide over
+      willChange: 'transform, opacity', // Hint browser during animation
     });
     // Animate current slide out
     gsap.to(currentSlideElement, {
@@ -100,7 +122,11 @@ export default function ExampleList({
       duration: 0.5,
       onComplete: () => {
         // After sliding out, fully hide it and reset its position for potential reuse
-        gsap.set(currentSlideElement, { position: 'absolute', opacity: 0 });
+        gsap.set(currentSlideElement, {
+          position: 'absolute',
+          opacity: 0,
+          willChange: 'auto',
+        });
       },
     });
 
@@ -112,17 +138,7 @@ export default function ExampleList({
       onComplete: () => {
         setCurrentIndex(nextIndex); // Update the current index
         setIsTweening(false); // Animation finished
-
-        // After animation, ensure only the new current slide is 'relative' and visible
-        // and others are reset to absolute and hidden.
-        slides.forEach((s, i) => {
-          gsap.set(s, {
-            position: i === nextIndex ? 'relative' : 'absolute',
-            opacity: i === nextIndex ? 1 : 0,
-            xPercent: i === nextIndex ? 0 : i < nextIndex ? -100 : 100, // Reset xPercent for others
-            zIndex: i === nextIndex ? 1 : 0,
-          });
-        });
+        gsap.set(nextSlideElement, { willChange: 'auto' });
       },
     });
 
