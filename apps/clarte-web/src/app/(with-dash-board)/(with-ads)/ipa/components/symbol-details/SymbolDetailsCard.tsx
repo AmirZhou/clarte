@@ -25,6 +25,7 @@
 // do I need to set useClient, what trade-offs here?
 import { IpaWithoutExamplesDto } from '@clarte/dto';
 import { FetchedExample } from '../IpaInteractionWrapper';
+import ExampleList from './ExampleList';
 
 interface SymbolDetailsCardProps {
   symbolData: IpaWithoutExamplesDto;
@@ -42,6 +43,11 @@ export function SymbolDetailsCard({
   return (
     <div className="w-96 h-[480px] p-12 bg-card text-card-foreground rounded-3xl">
       <h2 className="text-center text-9xl">{symbolData.symbol}</h2>
+      <ExampleList
+        examples={examples}
+        isLoadingExamples={isLoadingExamples}
+        errorMessage={errorMessage}
+      />
     </div>
   );
 }
