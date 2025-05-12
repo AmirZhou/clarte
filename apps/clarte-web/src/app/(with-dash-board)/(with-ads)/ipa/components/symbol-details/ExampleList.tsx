@@ -3,7 +3,7 @@
 import { FetchedExample } from '../IpaInteractionWrapper';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import ExampleItem from './ExampleItem';
 
@@ -24,24 +24,49 @@ export default function ExampleList({
   const slidesRef = useRef<HTMLDivElement[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTweening, setIsTweening] = useState(false);
+  const [refsReady, setRefsReady] = useState(false);
 
-  // Function to add slide elements to the slidesRef array
-  // This is called via the 'ref' prop on each mapped slide
-  const assignSlideRef = (el: HTMLDivElement | null) => {
-    if (el && !slidesRef.current.includes(el)) {
-      slidesRef.current.push(el);
+  const assignSlideRef = useCallback((el: HTMLDivElement | null) => {
+    if (el) {
+      // Add to ref array if not already present for this element
+      // (Helps avoid duplicates if React reuses elements, though less likely with key changes)
+      if (!slidesRef.current.find((refEl) => refEl === el)) {
+        slidesRef.current.push(el);
+      }
     }
-  };
+    // After potential ref assignments (during render), check if all refs are collected
+    // This check is more reliable if done in a layout effect or after all items are mapped
+    // For simplicity here, we'll rely on useGSAP's dependency on 'examples' and 'refsReady'
+  }, []); // No dependencies, this function itself doesn't change
+
   // Effect to reset slides and current index when 'examples' prop changes
   useEffect(() => {
     slidesRef.current = []; // Clear out old refs
     setCurrentIndex(0); // Reset to the first slide
-    // GSAP animations will be re-initialized by the useGSAP hook due to 'examples' dependency
+    setRefsReady(false); // Mark refs as not ready for the new set
+    // The actual collection of new refs will happen during the render triggered by this effect
   }, [examples]);
+
+  // Effect to check if all refs are collected after a render based on 'examples'
+  useEffect(() => {
+    if (
+      examples &&
+      examples.length > 0 &&
+      slidesRef.current.length === examples.length
+    ) {
+      setRefsReady(true);
+    } else if (examples && examples.length === 0) {
+      setRefsReady(true); // Ready in the sense that there's nothing to set up
+    } else {
+      setRefsReady(false);
+    }
+  }, [examples, slidesRef.current.length]); // Re-run when examples or the collected refs count changes
 
   const { contextSafe } = useGSAP(
     () => {
+      // Guard: Only run if we have examples, refs are ready, and lengths match
       if (
+        !refsReady ||
         !examples ||
         examples.length === 0 ||
         slidesRef.current.length !== examples.length
@@ -51,6 +76,9 @@ export default function ExampleList({
       }
 
       const slides = slidesRef.current;
+      console.log(
+        `[GSAP Setup] Initializing ${slides.length} slides. CurrentIndex: ${currentIndex}`
+      );
       // Initial setup: position all slides
       // Only the current slide is visible and in normal flow
       // Others are stacked absolutely and hidden, ready to be animated in.
@@ -59,15 +87,20 @@ export default function ExampleList({
           xPercent: i === currentIndex ? 0 : i < currentIndex ? -100 : 100,
           opacity: i === currentIndex ? 1 : 0,
           position: i === currentIndex ? 'relative' : 'absolute',
+          willChange: 'transform, opacity',
         });
       });
     },
-    { scope: containerRef, dependencies: [examples, currentIndex] }
+    { scope: containerRef, dependencies: [examples, currentIndex, refsReady] }
   );
 
   const goToSlide = contextSafe((direction: number) => {
-    if (isTweening || !examples || examples.length <= 1) return;
-    setIsTweening(true);
+    if (isTweening || !examples || examples.length <= 1 || !refsReady) {
+      console.warn(
+        'GSAP goToSlide: Tweening, no/few examples, or refs not ready.'
+      );
+      return;
+    }
 
     const slides = slidesRef.current;
     // Safety check for slides and current index
@@ -99,6 +132,7 @@ export default function ExampleList({
       return;
     }
     const nextSlideElement = slides[nextIndex];
+    setIsTweening(true); // Set tweening true only if we proceed
 
     // Prepare the next slide (position it off-screen and make it visible)
     // and ensure it's on top for the transition
