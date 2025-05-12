@@ -55,7 +55,9 @@ export default function ExampleList({
   const assignSlideRef = useCallback((el: HTMLDivElement | null) => {
     if (el && !slidesRef.current.includes(el)) {
       slidesRef.current.push(el);
-      // console.log(`[assignSlideRef] Added ref. Total refs: ${slidesRef.current.length} / Expected: ${examples.length}`);
+      console.log(
+        `[assignSlideRef] Added ref. Total refs: ${slidesRef.current.length} / Expected: ${examples.length}`
+      );
     }
   }, []); // Stable callback
 

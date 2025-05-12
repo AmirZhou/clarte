@@ -51,6 +51,12 @@ export default function IpaInteractionWrapper({
       const fetchedExamples: FetchedExample[] = await response.json();
       console.log('Fetched Examples:', fetchedExamples);
       setExamples(fetchedExamples);
+      console.log(
+        'Set examples to:',
+        fetchedExamples,
+        'Reference:',
+        fetchedExamples
+      );
     } catch (error: any) {
       console.error('[Client Fetch] Error fetching examples:', error);
       setErrorMessage(error.message || 'Failed to load examples.');
