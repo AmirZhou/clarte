@@ -1,14 +1,13 @@
 'use client';
 
 import { IpaWithoutExamplesDto } from '@clarte/dto';
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { SymbolDetailsCard } from './symbol-details/SymbolDetailsCard';
 
 interface IpaInteractionWrapperProps {
   symbolsData: IpaWithoutExamplesDto[];
 }
 
-// i got this interface here, this may be used in its nested components
 export interface FetchedExample {
   id: number;
   frenchEntry: string;
@@ -26,31 +25,31 @@ export default function IpaInteractionWrapper({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleSymbolClick = async (symbol: IpaWithoutExamplesDto) => {
-    if (selectedSymbol?.id == symbol.id) {
-      // Deselect or do nothing
-      // set dedounce here
+    if (selectedSymbol?.id === symbol.id) {
+      // Deselect the symbol
       setSelectedSymbol(null);
-      setExamples([]);
+      // Only clear examples if it’s not already empty
+      if (examples.length > 0) {
+        setExamples([]);
+      }
       return;
     }
 
+    // Select a new symbol
     setSelectedSymbol(symbol);
     setIsLoadingExamples(true);
     setErrorMessage(null);
-    setExamples([]);
+    setExamples([]); // Clear examples to indicate loading
 
     try {
-      // Construct the URL using the Ingress path /api/...
-
       const proxyUrl = `/web-api/proxy/ipa-examples/${encodeURIComponent(symbol.symbol)}?limit=24`;
       console.log(`[Client Fetch] Fetching examples from: ${proxyUrl}`);
-      const response = await fetch(proxyUrl); // Fetch via Ingress
+      const response = await fetch(proxyUrl);
       if (!response.ok) {
         throw new Error(`Failed to fetch examples: ${response.statusText}`);
       }
       const fetchedExamples: FetchedExample[] = await response.json();
-      console.log('fetched Example');
-      console.log(fetchedExamples);
+      console.log('Fetched Examples:', fetchedExamples);
       setExamples(fetchedExamples);
     } catch (error: any) {
       console.error('[Client Fetch] Error fetching examples:', error);
@@ -59,6 +58,9 @@ export default function IpaInteractionWrapper({
       setIsLoadingExamples(false);
     }
   };
+
+  // Memoize examples to stabilize the prop passed to SymbolDetailsCard
+  const stableExamples = useMemo(() => examples, [examples]);
 
   return (
     <div className="flex gap-8 mt-32">
@@ -89,7 +91,7 @@ export default function IpaInteractionWrapper({
         {selectedSymbol && (
           <SymbolDetailsCard
             symbolData={selectedSymbol}
-            examples={examples}
+            examples={stableExamples} // Pass the memoized examples
             isLoadingExamples={isLoadingExamples}
             errorMessage={errorMessage}
           />
