@@ -1,12 +1,9 @@
+// IpaInteractionWrapper.tsx
 'use client';
 
 import { IpaWithoutExamplesDto } from '@clarte/dto';
-import { useState, useMemo } from 'react';
-import { SymbolDetailsCard } from './symbol-details/SymbolDetailsCard';
-
-interface IpaInteractionWrapperProps {
-  symbolsData: IpaWithoutExamplesDto[];
-}
+import { useState, useEffect, useMemo } from 'react'; // Import useMemo
+import { SymbolDetailsCard } from './symbol-details/SymbolDetailsCard'; // Assuming this path
 
 export interface FetchedExample {
   id: number;
@@ -15,31 +12,35 @@ export interface FetchedExample {
   s3AudioKeyExample?: string;
 }
 
+interface IpaInteractionWrapperProps {
+  symbolsData: IpaWithoutExamplesDto[];
+}
+
 export default function IpaInteractionWrapper({
   symbolsData,
 }: IpaInteractionWrapperProps) {
   const [selectedSymbol, setSelectedSymbol] =
     useState<IpaWithoutExamplesDto | null>(null);
-  const [examples, setExamples] = useState<FetchedExample[]>([]);
+  // This state holds the raw fetched examples
+  const [rawExamples, setRawExamples] = useState<FetchedExample[]>([]);
   const [isLoadingExamples, setIsLoadingExamples] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  // Memoize the examples array to ensure its reference is stable
+  // unless rawExamples actually changes.
+  const examples = useMemo(() => rawExamples, [rawExamples]);
+
   const handleSymbolClick = async (symbol: IpaWithoutExamplesDto) => {
     if (selectedSymbol?.id === symbol.id) {
-      // Deselect the symbol
       setSelectedSymbol(null);
-      // Only clear examples if it’s not already empty
-      if (examples.length > 0) {
-        setExamples([]);
-      }
+      setRawExamples([]); // Reset raw examples
       return;
     }
 
-    // Select a new symbol
     setSelectedSymbol(symbol);
     setIsLoadingExamples(true);
     setErrorMessage(null);
-    setExamples([]); // Clear examples to indicate loading
+    setRawExamples([]); // Reset raw examples, which will pass an empty array down
 
     try {
       const proxyUrl = `/web-api/proxy/ipa-examples/${encodeURIComponent(symbol.symbol)}?limit=24`;
@@ -48,15 +49,9 @@ export default function IpaInteractionWrapper({
       if (!response.ok) {
         throw new Error(`Failed to fetch examples: ${response.statusText}`);
       }
-      const fetchedExamples: FetchedExample[] = await response.json();
-      console.log('Fetched Examples:', fetchedExamples);
-      setExamples(fetchedExamples);
-      console.log(
-        'Set examples to:',
-        fetchedExamples,
-        'Reference:',
-        fetchedExamples
-      );
+      const fetchedExamplesData: FetchedExample[] = await response.json();
+      console.log('Fetched Examples Data:', fetchedExamplesData);
+      setRawExamples(fetchedExamplesData); // Update raw examples
     } catch (error: any) {
       console.error('[Client Fetch] Error fetching examples:', error);
       setErrorMessage(error.message || 'Failed to load examples.');
@@ -64,9 +59,6 @@ export default function IpaInteractionWrapper({
       setIsLoadingExamples(false);
     }
   };
-
-  // Memoize examples to stabilize the prop passed to SymbolDetailsCard
-  const stableExamples = useMemo(() => examples, [examples]);
 
   return (
     <div className="flex gap-8 mt-32">
@@ -93,11 +85,10 @@ export default function IpaInteractionWrapper({
       </div>
 
       <div className="flex-1 flex justify-center">
-        {/* Display details for the selected symbol */}
         {selectedSymbol && (
           <SymbolDetailsCard
             symbolData={selectedSymbol}
-            examples={stableExamples} // Pass the memoized examples
+            examples={examples} // Pass the memoized examples
             isLoadingExamples={isLoadingExamples}
             errorMessage={errorMessage}
           />
