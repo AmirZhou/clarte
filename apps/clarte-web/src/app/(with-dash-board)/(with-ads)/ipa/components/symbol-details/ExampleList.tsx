@@ -40,53 +40,59 @@ export default function ExampleList({
 
   // Effect 1: Reset core carousel state when 'examples' prop reference changes
   useEffect(() => {
-    if (prevExamplesRef.current !== examples) {
+    if (prevExamplesRef.current.length === 0 && examples.length > 0) {
       console.log(
         `[useEffect examples] Examples prop changed. New examples length: ${examples.length}. Resetting internal state.`
+      );
+      // Only reset if transitioning from empty to populated
+      slidesRef.current = [];
+      setCurrentIndex(0);
+      setIsGsapSetupDone(false);
+    }
+    prevExamplesRef.current = examples;
+  }, [examples]);
+
+  // Callback ref to populate slidesRef.current. Does NOT set state.
+  const assignSlideRef = useCallback(
+    (el: HTMLDivElement | null) => {
+      if (el && !slidesRef.current.includes(el)) {
+        slidesRef.current.push(el);
+        console.log(
+          `[assignSlideRef] Added ref. Total refs: ${slidesRef.current.length} / Expected: ${examples.length}`
+        );
+      }
+    },
+    [examples]
+  ); // Stable callback
+
+  // Effect 2: Set isGsapSetupDone after all refs are collected for the current examples.
+  useLayoutEffect(() => {
+    if (prevExamplesRef.current.length === 0 && examples.length > 0) {
+      console.log(
+        `[useLayoutEffect] Examples changed from empty to ${examples.length}. Resetting state.`
       );
       slidesRef.current = [];
       setCurrentIndex(0);
       setIsGsapSetupDone(false);
       prevExamplesRef.current = examples;
     }
-  }, [examples]);
 
-  // Callback ref to populate slidesRef.current. Does NOT set state.
-  const assignSlideRef = useCallback((el: HTMLDivElement | null) => {
-    if (el && !slidesRef.current.includes(el)) {
-      slidesRef.current.push(el);
+    if (
+      examples.length > 0 &&
+      slidesRef.current.length === examples.length &&
+      !isGsapSetupDone
+    ) {
       console.log(
-        `[assignSlideRef] Added ref. Total refs: ${slidesRef.current.length} / Expected: ${examples.length}`
+        `[useLayoutEffect] All refs collected (${slidesRef.current.length}). Setting isGsapSetupDone = true.`
       );
+      setIsGsapSetupDone(true);
+    } else if (examples.length === 0 && !isGsapSetupDone) {
+      console.log(
+        `[useLayoutEffect] No examples. Setting isGsapSetupDone = true (base state).`
+      );
+      setIsGsapSetupDone(true);
     }
-  }, []); // Stable callback
-
-  // Effect 2: Set isGsapSetupDone after all refs are collected for the current examples.
-  useLayoutEffect(() => {
-    console.log(
-      `[useLayoutEffect] Checking refs. examples.length: ${examples.length}, slidesRef.current.length: ${slidesRef.current.length}, current isGsapSetupDone: ${isGsapSetupDone}`
-    );
-
-    if (examples.length > 0 && slidesRef.current.length === examples.length) {
-      if (!isGsapSetupDone) {
-        // Only set if changing from false to true
-        console.log(
-          '[useLayoutEffect] All refs collected. Setting isGsapSetupDone = true.'
-        );
-        setIsGsapSetupDone(true);
-      }
-    } else if (examples.length === 0) {
-      // No examples, consider setup "done" as there's nothing to set up.
-      if (!isGsapSetupDone) {
-        // If it was false, set to true.
-        console.log(
-          '[useLayoutEffect] No examples. Setting isGsapSetupDone = true (base state).'
-        );
-        setIsGsapSetupDone(true);
-      }
-    }
-    // If examples.length > 0 but refs not yet collected, isGsapSetupDone remains false (due to useEffect[examples] reset).
-  }, [examples.length, slidesRef.current.length, isGsapSetupDone]); // Rerun if these change
+  }, [examples, isGsapSetupDone]);
 
   // Effect 3: GSAP setup for initial slide positions and reacting to currentIndex changes
   const { contextSafe } = useGSAP(
@@ -121,7 +127,10 @@ export default function ExampleList({
       });
     },
     // Dependencies: Re-run when currentIndex changes or when isGsapSetupDone becomes true.
-    { scope: containerRef, dependencies: [currentIndex, isGsapSetupDone] }
+    {
+      scope: containerRef,
+      dependencies: [currentIndex, isGsapSetupDone, examples],
+    }
     // 'examples' is removed from here; its change flows through the other effects to update isGsapSetupDone.
   );
 
