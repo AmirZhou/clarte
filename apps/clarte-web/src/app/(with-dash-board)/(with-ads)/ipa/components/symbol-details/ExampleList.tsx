@@ -3,7 +3,7 @@
 import { FetchedExample } from '../IpaInteractionWrapper';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useLayoutEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import ExampleItem from './ExampleItem';
 
@@ -39,7 +39,7 @@ export default function ExampleList({
   };
 
   // Effect to reset slides and current index when 'examples' prop changes
-  useEffect(() => {
+  useLayoutEffect(() => {
     console.log(
       `[useEffect examples] Examples prop changed. New examples length: ${examples.length}. Resetting internal state.`
     );
