@@ -83,18 +83,18 @@ export default function ExampleList({
 
     const slides = slidesRef.current;
     // Safety check for slides and current index
-    if (
-      slides.length === 0 ||
-      currentIndex < 0 ||
-      currentIndex >= slides.length ||
-      !slides[currentIndex]
-    ) {
-      console.warn(
-        'GSAP goToSlide: Invalid current slide or slides array empty.'
-      );
-      setIsTweening(false);
-      return;
-    }
+    // if (
+    //   slides.length === 0 ||
+    //   currentIndex < 0 ||
+    //   currentIndex >= slides.length ||
+    //   !slides[currentIndex]
+    // ) {
+    //   console.warn(
+    //     'GSAP goToSlide: Invalid current slide or slides array empty.'
+    //   );
+    //   setIsTweening(false);
+    //   return;
+    // }
     const currentSlideElement = slides[currentIndex];
     let nextIndex = currentIndex + direction;
 
