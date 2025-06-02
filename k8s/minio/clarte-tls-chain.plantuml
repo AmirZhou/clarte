@@ -1,0 +1,137 @@
+@startuml
+<style>
+' Professional Dark Theme Configuration - Pure CSS Style
+!$color_bg = "#1e1e1e"
+!$color_bg_light = "#2d2d30"
+!$color_bg_lighter = "#3e3e42"
+!$color_fg = "#d4d4d4"
+!$color_fg_muted = "#969696"
+!$color_primary = "#007acc"
+!$color_primary_light = "#1f9cf0"
+!$color_success = "#4ec9b0"
+!$color_warning = "#dcdcaa"
+!$color_error = "#f44747"
+!$color_accent = "#c586c0"
+
+' Root document styling
+document {
+  BackGroundColor: $color_bg;
+  FontColor: $color_fg;
+  FontName: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
+  FontSize: 11;
+}
+
+' Sequence diagram specific styling
+sequenceDiagram {
+  ' Participants
+  participant {
+    LineColor: $color_primary;
+    BackGroundColor: $color_bg_light;
+    LineThickness: 2;
+    FontColor: $color_fg;
+    FontSize: 10;
+    RoundCorner: 8;
+    Padding: 8;
+  }
+ 
+  ' Lifelines
+  lifeline {
+    BackGroundColor: $color_bg_lighter;  
+    LineColor: $color_primary;          
+    LineThickness: 2;            
+  }
+ 
+  ' Messages/Arrows
+  arrow {
+    LineColor: $color_success;
+    FontColor: $color_fg;
+    FontSize: 9;
+    LineThickness: 2;
+  }
+ 
+  ' Notes
+  note {
+    BackGroundColor: $color_warning;
+    LineColor: $color_bg_lighter;
+    FontColor: $color_bg;
+    FontSize: 9;
+    RoundCorner: 4;
+    Padding: 6;
+  }
+ 
+  ' Groups/Alt blocks
+  group {
+    BackGroundColor: $color_bg_light;
+    LineColor: $color_accent;
+    FontColor: $color_fg;
+    FontSize: 10;
+    LineThickness: 1;
+  }
+ 
+  ' Separators
+  separator {
+    LineColor: $color_fg_muted;
+    BackGroundColor: $color_bg_light;
+    FontColor: $color_fg;
+    FontSize: 11;
+    FontStyle: bold;
+  }
+}
+</style>
+
+participant Win11 as "User (Win 11)"
+participant HostsFile as "Hosts File"
+participant K3d_LB as "K3d Load Balancer\n(Docker)"
+participant Traefik_Svc as "Traefik Service\n(K8s)"
+participant Traefik_Pod as "Traefik Pod"
+participant K8s_API as "K8s API Server"
+participant Backend_Svc as "Backend Service\n(Clarte/Minio)"
+participant Backend_Pod as "Backend Pod\n(Clarte/Minio)"
+
+note over Win11: User requests\nhttps://clarte.local/api/test
+
+Win11 ->> HostsFile: Resolve clarte.local
+HostsFile -->> Win11: 127.0.0.1
+
+Win11 ->> K3d_LB: 1. HTTPS GET /api/test (to 127.0.0.1:443)
+note right of Win11: curl.exe -v https://clarte.local/api/test --insecure
+
+K3d_LB ->> Traefik_Svc: 2. Forward TCP (443)
+Traefik_Svc ->> Traefik_Pod: 3. Forward TCP to websecure (8443)
+
+Traefik_Pod ->> K8s_API: 4. Find IngressRoute for 'clarte.local'
+K8s_API -->> Traefik_Pod: (Returns clarte-ingressroute)
+note right of Traefik_Pod: Reads 'Host(`clarte.local`) && PathPrefix(`/api`)'
+
+Traefik_Pod ->> K8s_API: 5. Find K8s Secret 'clarte-tls-secret'
+K8s_API -->> Traefik_Pod: (Returns Secret data)
+
+Traefik_Pod ->> Win11: 6. TLS Handshake (using clarte-tls-secret)
+note right of Traefik_Pod: Testing: openssl s_client -connect clarte.local:443\n(Needs Git Bash/WSL)
+
+Win11 ->> Traefik_Pod: 7. Encrypted HTTP Request
+
+activate Traefik_Pod
+note over Traefik_Pod: Traefik Decrypts Request (TLS Termination)
+note over Traefik_Pod: Request is now HTTP: GET /api/test
+
+Traefik_Pod ->> K8s_API: 8. Find Middleware 'strip-api-prefix'
+K8s_API -->> Traefik_Pod: (Returns Middleware definition)
+note over Traefik_Pod: Applies StripPrefix: /api -> /test
+
+Traefik_Pod ->> Backend_Svc: 9. HTTP GET /test (to clarte-api-svc)
+note right of Traefik_Pod: Testing: Check Traefik DEBUG logs\nfor routing & middleware messages.
+
+Backend_Svc ->> Backend_Pod: 10. HTTP GET /test (to ClarteApi_Pod)
+note right of Backend_Svc: Testing: kubectl get endpoints clarte-api-svc -n default
+
+Backend_Pod -->> Backend_Svc: 11. HTTP 200 OK (or other response)
+Backend_Svc -->> Traefik_Pod: 12. HTTP 200 OK
+deactivate Traefik_Pod
+
+Win11 ->> Traefik_Pod: (Connection established via TLS)
+Traefik_Pod -->> Win11: 13. HTTPS 200 OK (Re-encrypted or sends response)
+Win11 -->> K3d_LB: (Response flows back)
+K3d_LB -->> Win11: (Response flows back)
+
+@enduml

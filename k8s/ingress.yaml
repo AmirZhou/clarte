@@ -10,6 +10,8 @@ metadata:
     # on the IngressRoute Traefik generates (or remove it if not needed).
     # If your NestJS API doesn't need '/api' stripped, remove this annotation.
     traefik.ingress.kubernetes.io/router.middlewares: default-strip-api-prefix@kubernetescrd
+
+    
 spec:
   ingressClassName: traefik
   rules:
@@ -41,4 +43,4 @@ spec:
               service:
                 name: clarte-web-svc # <-- Route to the WEB service
                 port:
-                  number: 80  # Port of the clarte-web-svc
+                  number: 80 # Port of the clarte-web-svc

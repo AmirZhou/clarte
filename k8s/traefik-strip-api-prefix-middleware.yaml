@@ -2,9 +2,9 @@
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: strip-api-prefix # Give the middleware a name
-  namespace: default # Ensure it's in the same namespace as your Ingress
+  name: strip-api-prefix
+  namespace: default
 spec:
   stripPrefix:
     prefixes:
-      - /api # Specify the prefix(es) to remove
+      - /api

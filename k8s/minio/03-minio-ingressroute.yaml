@@ -1,0 +1,36 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: minio-s3-https # Descriptive name for the S3 route
+  namespace: minio-tenant # IMPORTANT: Same namespace as MinIO services and the TLS secret
+spec:
+  entryPoints:
+    - websecure # Listen on Traefik's default HTTPS entrypoint (port 443)
+  routes:
+    - match: Host(`minio-s3.local.test`) # Match incoming requests by hostname
+      kind: Rule
+      services:
+        - name: my-minio-hl # Route to the MinIO S3 API service
+          port: 9000 # Route to its HTTP port 9000
+          # scheme: http # Optional, Traefik usually defaults to http
+  tls:
+    secretName: minio-tls-secret # Tell Traefik to use *this* secret for TLS termination
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: minio-console-https # Descriptive name for the Console route
+  namespace: minio-tenant
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`minio-console.local.test`) # Match console hostname
+      kind: Rule
+      services:
+        - name: my-minio-console # Route to the MinIO Console service
+          port: 9090 # Route to its HTTP port 9090 (Confirmed from your describe output)
+          # scheme: http
+  tls:
+    secretName: minio-tls-secret # Use the *same* secret for TLS termination

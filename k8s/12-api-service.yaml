@@ -5,7 +5,8 @@ metadata:
   name: clarte-api-svc # this one, stable dns name for them pods
 spec:
   ports:
-    - protocol: TCP
+    - name: web
+      protocol: TCP
       port: 80 # The service listen on
       targetPort: 9999 # the container listen on LISTENING_PORT
   selector:

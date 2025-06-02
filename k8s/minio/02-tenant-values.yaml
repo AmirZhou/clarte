@@ -1,0 +1,43 @@
+# --- MinIO Tenant Helm Values ---
+# Base configuration for a 'my-minio' tenant in 'minio-tenant' namespace.
+# Reference: https://min.io/docs/minio/kubernetes/upstream/reference/tenant-chart-values.html
+
+# The 'tenant' block mirrors the MinIO Tenant CRD structure
+tenant:
+  name: my-minio
+  image:
+    repository: quay.io/minio/minio
+    tag: RELEASE.2025-04-08T15-41-24Z
+    pullPolicy: IfNotPresent
+
+  imagePullSecret: {}
+  initContainers: []
+  scheduler: {}
+  # --- Credentials Configuration ---
+  configSecret:
+    name: minio-tenant-creds
+
+  pools:
+    - servers: 1 # 1 means Standalong mode this cannot be upgraded to distribution mode
+      name: pool-0 # Pool name Example: pool-0, pool-1, etc. keeping sequential numbers is recommended
+      volumesPerServer: 4 # For standalong a minimal of 4 is required
+      size: 5Gi
+      storageAnnotations: {} # Applied to PVC metadata
+      storageLabels: {} # Applied to PVC metadata
+
+  # --- TLS Configuration ---
+  certificate:
+    requestAutoCert: false
+
+  # --- Ingress Configuration ---
+  ingress:
+    api:
+      enabled: false
+    console:
+      enabled: false
+
+  env:
+    - name: MINIO_BROWSER_REDIRECT_URL
+      value: 'https://minio-console.local.test'
+    - name: MINIO_SERVER_URL
+      value: 'https://minio-s3.local.test'

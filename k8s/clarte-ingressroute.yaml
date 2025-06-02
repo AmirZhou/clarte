@@ -1,0 +1,36 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: clarte-ingressroute
+  namespace: default
+spec:
+  entryPoints:
+    - web
+    - websecure
+
+  routes:
+    # Route 1: Web API - most specific path first
+    # - kind: Rule
+    #   match: Host(`clarte.local`) && PathPrefix(`/web-api`)
+    #   services:
+    #     - name: clarte-web-svc
+    #       port: 80
+
+    # # Route 2: API with middleware - strip /api prefix
+    # - kind: Rule
+    #   match: Host(`clarte.local`) && PathPrefix(`/api`)
+    #   middlewares:
+    #     - name: strip-api-prefix
+    #   services:
+    #     - name: clarte-api-svc
+    #       port: 80
+
+    # Route 3: Default route - catches everything else
+    - kind: Rule
+      match: Host(`clarte.local`)
+      services:
+        - name: clarte-web-svc
+          port: web
+
+  tls:
+    secretName: clarte-tls-secret

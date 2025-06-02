@@ -1,0 +1,164 @@
+@startuml
+<style>
+' Professional Dark Theme Configuration - Pure CSS Style
+!$color_bg = "#1e1e1e"
+!$color_bg_light = "#2d2d30"
+!$color_bg_lighter = "#3e3e42"
+!$color_fg = "#d4d4d4"
+!$color_fg_muted = "#969696"
+!$color_primary = "#007acc"
+!$color_primary_light = "#1f9cf0"
+!$color_success = "#4ec9b0"
+!$color_warning = "#dcdcaa"
+!$color_error = "#f44747"
+!$color_accent = "#c586c0"
+
+' Root document styling
+document {
+  BackGroundColor: $color_bg;
+  FontColor: $color_fg;
+  FontName: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
+  FontSize: 11;
+}
+
+' Sequence diagram specific styling
+sequenceDiagram {
+  ' Participants
+  participant {
+    LineColor: $color_primary;
+    BackGroundColor: $color_bg_light;
+    LineThickness: 2;
+    FontColor: $color_fg;
+    FontSize: 10;
+    RoundCorner: 8;
+    Padding: 8;
+  }
+  
+  ' Lifelines
+  lifeline {
+    BackGroundColor: $color_bg_lighter;  
+    LineColor: $color_primary;           
+    LineThickness: 2;             
+  }
+ 
+  ' Messages/Arrows
+  arrow {
+    LineColor: $color_success;
+    FontColor: $color_fg;
+    FontSize: 9;
+    LineThickness: 2;
+  }
+ 
+  ' Notes
+  note {
+    BackGroundColor: $color_warning;
+    LineColor: $color_bg_lighter;
+    FontColor: $color_bg;
+    FontSize: 9;
+    RoundCorner: 4;
+    Padding: 6;
+  }
+ 
+  ' Groups/Alt blocks
+  group {
+    BackGroundColor: $color_bg_light;
+    LineColor: $color_accent;
+    FontColor: $color_fg;
+    FontSize: 10;
+    LineThickness: 1;
+  }
+  
+  ' Separators
+  separator {
+    LineColor: $color_fg_muted;
+    BackGroundColor: $color_bg_light;
+    FontColor: $color_fg;
+    FontSize: 11;
+    FontStyle: bold;
+  }
+}
+</style>
+
+title "MinIO Server TLS Handshake - Sequence Diagram"
+
+participant "Browser/Client" as browser
+participant "MinIO Server\n(minio-s3.local.test)" as minio
+participant "DNS/CA Authority" as dns
+
+== TLS Handshake Process ==
+
+browser -> minio: HTTPS Request
+activate browser
+activate minio
+
+note right of browser
+  Client initiates secure
+  connection to MinIO server
+  on port 443 (HTTPS)
+end note
+
+minio -> browser: Server Certificate (tls.crt)
+note left of minio
+  **MinIO proves it's the real server**
+  - Sends X.509 certificate
+  - Contains public key
+  - Shows server identity
+  - Includes domain name validation
+end note
+
+browser -> dns: Validate certificate against\nDNS names & CA
+activate dns
+
+note right of dns
+  **Browser checks:**
+  "Is this really minio-s3.local.test?"
+ 
+  Validation includes:
+  - Certificate chain verification
+  - Domain name matching
+  - Certificate Authority validation
+  - Expiration date check
+  - Certificate revocation status
+end note
+
+dns -> browser: Certificate validation result
+deactivate dns
+
+alt Certificate validation successful
+    browser <-> minio: **Encrypted Traffic**
+    note over browser, minio
+      **Secure Communication Established**
+      - Symmetric encryption keys exchanged
+      - All data encrypted with TLS
+      - Client/server identity verified
+      - Data integrity guaranteed
+    end note
+   
+    browser -> minio: Encrypted API requests\n(GET, PUT, DELETE objects)
+    minio -> browser: Encrypted API responses\n(Object data, metadata)
+   
+else Certificate validation failed
+    browser -> browser: Connection rejected
+    note right of browser
+      **Security Error**
+      - Certificate mismatch
+      - Invalid CA signature
+      - Expired certificate
+      - Connection terminated
+    end note
+end
+
+deactivate minio
+deactivate browser
+
+== Security Benefits ==
+
+note over browser, minio
+  **TLS provides:**
+  • **Confidentiality**: Data encrypted in transit
+  • **Integrity**: Data cannot be tampered with
+  • **Authentication**: Server identity verified
+  • **Non-repudiation**: Cryptographic proof of communication
+end note
+
+@enduml
