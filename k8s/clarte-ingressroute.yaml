@@ -32,5 +32,5 @@ spec:
         - name: clarte-web-svc
           port: web
 
-  tls:
-    secretName: clarte-tls-secret
+  # tls:
+  #   secretName: clarte-tls-secret
