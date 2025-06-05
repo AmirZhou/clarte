@@ -14,17 +14,14 @@ spec:
   isCA: false
   usages:
     - server auth
-    - client auth
-  commonName: clarte.local # A primary identifier, can be one of your DNS names
 
   duration: 2160h # 90d
   renewBefore: 360h # 15d
 
   dnsNames: # Subject Alternative Names (SANs) - critical for modern TLS
-    - clarte.local # Hostname for MinIO S3 API
+    - 'clarte.local' # Hostname for MinIO S3 API
 
 
   # Optional fields for self-signed certs (defaults are usually fine for local testing):
   # duration: 2160h                  # 90 days (default certificate lifespan)
   # renewBefore: 360h                # 15 days (how long before expiry cert-manager should renew it)
-
